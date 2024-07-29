@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/29 15:27:08 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/29 15:52:49 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,9 @@
 # include <dirent.h>
 # include <termios.h>
 # include "../libft/libft.h"
+
+void	free2(char **p);
+char	**parseline(char *line);
+int		exec(char **command);
 
 #endif

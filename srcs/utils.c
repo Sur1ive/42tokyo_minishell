@@ -1,34 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/29 15:54:17 by yxu              ###   ########.fr       */
+/*   Created: 2024/07/29 15:43:33 by yxu               #+#    #+#             */
+/*   Updated: 2024/07/29 15:44:01 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(int argc, char **argv)
+void	free2(char **p)
 {
-	char	*line;
-	char	**command;
+	int	i;
 
-	if (argc > 1)
-	{
-		exec(argv + 1);
-		return (0);
-	}
-	while (line != NULL)
-	{
-		line = readline("$ ");
-		free(line);
-		add_history(rl_line_buffer);
-		command = parseline(rl_line_buffer);
-		exec(command);
-	}
-	return (0);
+	if (p == NULL)
+		return ;
+	i = 0;
+	while (p[i])
+		free(p[i++]);
+	free(p);
 }
