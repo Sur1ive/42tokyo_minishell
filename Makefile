@@ -1,18 +1,24 @@
 NAME	= minishell
+SRC_DIR = srcs/
 SRCS	= main.c
+SRCS	:= $(addprefix $(SRC_DIR), $(SRCS))
 OBJS	= $(SRCS:.c=.o)
-CC		= cc -Wall -Wextra -Werror -I.
+LIB		= ./libft/libft.a
+CC		= cc -Wall -Wextra -Werror -Iincludes
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) -o $(NAME) -lreadline
+	make -C libft
+	$(CC) $(OBJS) $(LIB) -o $(NAME) -lreadline
 
 clean:
 	rm -rf $(OBJS)
+	make clean -C libft
 
 fclean: clean
 	rm -rf $(NAME)
+	make clean -C libft
 
 re: fclean all
 

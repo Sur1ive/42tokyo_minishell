@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/28 15:31:32 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/29 15:27:08 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,6 @@
 # include <signal.h>
 # include <dirent.h>
 # include <termios.h>
+# include "../libft/libft.h"
 
 #endif
