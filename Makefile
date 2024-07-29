@@ -6,7 +6,7 @@ CC		= cc -Wall -Wextra -Werror -I.
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) -o $(NAME)
+	$(CC) $(OBJS) -o $(NAME) -lreadline
 
 clean:
 	rm -rf $(OBJS)
