@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/30 10:12:19 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/30 10:36:00 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,13 @@
 # include <termios.h>
 # include "../libft/libft.h"
 
+# define PATH_MAX 4096
+
 void	free2(char **p);
 char	**parseline(char *line);
-int		exec(char **command);
+int		exec(char **command, char **envp);
 int		echo(char **args);
 int		pwd(void);
+int		env(char **envp);
 
 #endif
