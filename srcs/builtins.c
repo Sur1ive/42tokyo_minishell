@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 09:19:07 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/30 11:35:12 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/30 13:05:35 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,12 @@ int	env(char **envp)
 
 int	cd(char **args)
 {
+	//filename length path length
 	if (!args)
 		chdir(getenv("HOME"));
 	else if (args[1])
 	{
-		printf("cd: too many args\n");
+		printf("cd: too many arguments\n");
 		return (1);
 	}
 	else
