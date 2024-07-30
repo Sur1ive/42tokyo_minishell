@@ -1,35 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/30 09:25:33 by yxu              ###   ########.fr       */
+/*   Created: 2024/07/30 09:19:07 by yxu               #+#    #+#             */
+/*   Updated: 2024/07/30 10:12:10 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(int argc, char **argv)
+int	echo(char **args)
 {
-	char	*input;
-	char	**commandline;
+	int	i;
 
-	if (argc > 1)
+	i = 0;
+	while (args[i])
 	{
-		exec(argv + 1);
-		return (0);
+		if (i > 0)
+			printf(" ");
+		printf("%s", args[i++]);
 	}
-	input = readline("$ ");
-	while (input != NULL)
-	{
-		free(input);
-		add_history(rl_line_buffer);
-		commandline = parseline(rl_line_buffer);
-		exec(commandline);
-		input = readline("$ ");
-	}
+	printf("\n");
+	return (0);
+}
+
+int	pwd(void)
+{
+	char	workdir[256];
+
+	ft_memset(workdir, 0, 256);
+	if (getcwd(workdir, 255) == NULL)
+		return (1);
+	printf("%s\n", workdir);
 	return (0);
 }

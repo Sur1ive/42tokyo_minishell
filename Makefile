@@ -1,6 +1,6 @@
 NAME	= minishell
 SRC_DIR = srcs/
-SRCS	= main.c error.c parse.c utils.c exec.c
+SRCS	= main.c error.c parse.c utils.c exec.c builtins.c
 SRCS	:= $(addprefix $(SRC_DIR), $(SRCS))
 OBJS	= $(SRCS:.c=.o)
 LIB		= ./libft/libft.a

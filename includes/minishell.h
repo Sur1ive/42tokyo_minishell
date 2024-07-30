@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/29 15:52:49 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/30 10:12:19 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,7 @@
 void	free2(char **p);
 char	**parseline(char *line);
 int		exec(char **command);
+int		echo(char **args);
+int		pwd(void);
 
 #endif
