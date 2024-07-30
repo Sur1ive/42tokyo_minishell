@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/30 11:36:32 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/30 22:07:47 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@
 # define PATH_MAX 4096
 
 void	free2(char **p);
+char	*ft_strjoin3(char *s1, char *s2, char *s3);
 char	**parseline(char *line);
-int		exec(char **command, char **envp);
+int		exec(char **args, char **envp);
 int		echo(char **args);
 int		pwd(void);
 int		env(char **envp);

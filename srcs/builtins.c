@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 09:19:07 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/30 13:05:35 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/30 22:33:18 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ int	echo(char **args)
 {
 	int	i;
 
-	i = 0;
-	while (args && args[i])
+	i = 1;
+	while (args[i])
 	{
-		if (i > 0)
+		if (i > 1)
 			printf(" ");
 		printf("%s", args[i++]);
 	}
@@ -51,16 +51,16 @@ int	env(char **envp)
 int	cd(char **args)
 {
 	//filename length path length
-	if (!args)
+	if (args[1] == NULL)
 		chdir(getenv("HOME"));
-	else if (args[1])
+	else if (args[2])
 	{
 		printf("cd: too many arguments\n");
 		return (1);
 	}
 	else
 	{
-		chdir(args[0]);
+		chdir(args[1]);
 	}
 	return (0);
 }
