@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/30 10:36:00 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/30 11:36:32 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,6 @@ int		exec(char **command, char **envp);
 int		echo(char **args);
 int		pwd(void);
 int		env(char **envp);
+int		cd(char **args);
 
 #endif

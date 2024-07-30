@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/30 10:25:03 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/30 11:36:05 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc > 1)
 	{
-		exec(argv + 1, envp);
+		(void)argv;
+		// exec
 		return (0);
 	}
 	input = readline("$ ");

@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 09:19:07 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/30 10:35:42 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/30 11:35:12 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	echo(char **args)
 	int	i;
 
 	i = 0;
-	while (args[i])
+	while (args && args[i])
 	{
 		if (i > 0)
 			printf(" ");
@@ -45,5 +45,21 @@ int	env(char **envp)
 	i = 0;
 	while (envp[i])
 		printf("%s\n", envp[i++]);
+	return (0);
+}
+
+int	cd(char **args)
+{
+	if (!args)
+		chdir(getenv("HOME"));
+	else if (args[1])
+	{
+		printf("cd: too many args\n");
+		return (1);
+	}
+	else
+	{
+		chdir(args[0]);
+	}
 	return (0);
 }
