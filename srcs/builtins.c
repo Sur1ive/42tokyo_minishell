@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 09:19:07 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/30 22:33:18 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/31 11:22:16 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ int	pwd(void)
 
 	ft_memset(workdir, 0, PATH_MAX + 1);
 	if (getcwd(workdir, PATH_MAX) == NULL)
+	{
+		printf("bash: pwd: %s\n", strerror(errno));
 		return (1);
+	}
 	printf("%s\n", workdir);
 	return (0);
 }
@@ -50,17 +53,21 @@ int	env(char **envp)
 
 int	cd(char **args)
 {
-	//filename length path length
+	char	*dir;
+
 	if (args[1] == NULL)
-		chdir(getenv("HOME"));
+		dir = getenv("HOME");
 	else if (args[2])
 	{
-		printf("cd: too many arguments\n");
+		printf("bash: cd: too many arguments\n");
 		return (1);
 	}
 	else
+		dir = args[1];
+	if (chdir(dir) == -1)
 	{
-		chdir(args[1]);
+		printf("bash: cd: %s: %s\n", dir, strerror(errno));
+		return (1);
 	}
 	return (0);
 }

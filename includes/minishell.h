@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/30 22:07:47 by yxu              ###   ########.fr       */
+/*   Updated: 2024/07/31 10:55:44 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@
 # include <signal.h>
 # include <dirent.h>
 # include <termios.h>
+# include <errno.h>
 # include "../libft/libft.h"
 
+# define NAME_MAX 255
 # define PATH_MAX 4096
 
 void	free2(char **p);
