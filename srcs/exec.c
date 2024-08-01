@@ -6,19 +6,19 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/31 15:04:05 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/01 13:49:52 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static int	is_builtin(char *command);
-static int	exec_bulitin(char **args, char **envp);
+static int	exec_bulitin(char **args, char ***envpp);
 static char	*search_executale(char *command, char *filepath_dest);
 static int	exec_extern(char **args, char **envp);
-int			exec(char **args, char **envp);
+int			exec(char **args, char ***envpp);
 
-int	exec(char **args, char **envp)
+int	exec(char **args, char ***envpp)
 {
 	char	*command;
 
@@ -26,9 +26,9 @@ int	exec(char **args, char **envp)
 	if (command == NULL)
 		return (0);
 	if (is_builtin(command))
-		exec_bulitin(args, envp);
+		exec_bulitin(args, envpp);
 	else
-		exec_extern(args, envp);
+		exec_extern(args, *envpp);
 	free2(args);
 	return (0);
 }
@@ -36,12 +36,13 @@ int	exec(char **args, char **envp)
 static int	is_builtin(char *command)
 {
 	if (!(ft_strcmp(command, "echo") && ft_strcmp(command, "pwd")
-			&& ft_strcmp(command, "env") && ft_strcmp(command, "cd")))
+			&& ft_strcmp(command, "env") && ft_strcmp(command, "cd")
+			&& ft_strcmp(command, "export")))
 		return (1);
 	return (0);
 }
 
-static int	exec_bulitin(char **args, char **envp)
+static int	exec_bulitin(char **args, char ***envpp)
 {
 	char	*command;
 
@@ -51,9 +52,11 @@ static int	exec_bulitin(char **args, char **envp)
 	if (ft_strcmp(command, "pwd") == 0)
 		return (pwd());
 	if (ft_strcmp(command, "env") == 0)
-		return (env(envp));
+		return (env(*envpp));
 	if (ft_strcmp(command, "cd") == 0)
-		return (cd(args));
+		return (cd(args, envpp));
+	if (ft_strcmp(command, "export") == 0)
+		return (export(args, envpp));
 	return (-1);
 }
 
@@ -62,7 +65,7 @@ static char	*search_executale(char *command, char *filepath_dest)
 	char	*filepath_malloc;
 	char	**dirs;
 	int		i;
-
+//search ./
 	dirs = ft_split(getenv("PATH"), ':');
 	i = 0;
 	while (dirs[i] != NULL)

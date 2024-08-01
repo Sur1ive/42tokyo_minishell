@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/31 10:55:44 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/01 13:43:36 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,20 @@
 # include <errno.h>
 # include "../libft/libft.h"
 
-# define NAME_MAX 255
 # define PATH_MAX 4096
 
 void	free2(char **p);
 char	*ft_strjoin3(char *s1, char *s2, char *s3);
+int		ft_setenv(char ***envpp, char *name, char *value);
+char	*ft_getenv(char **envp, char *name);
+int		ft_count(char **p);
 char	**parseline(char *line);
-int		exec(char **args, char **envp);
+int		init_envp(char ***envpp);
+int		exec(char **args, char ***envpp);
 int		echo(char **args);
 int		pwd(void);
 int		env(char **envp);
-int		cd(char **args);
+int		cd(char **args, char ***envpp);
+int		export(char **args, char ***envpp);
 
 #endif

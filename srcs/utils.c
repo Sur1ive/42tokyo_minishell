@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:33 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/30 22:07:27 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/01 13:11:17 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,14 @@ char	*ft_strjoin3(char *s1, char *s2, char *s3)
 		*str++ = *s3++;
 	*str = '\0';
 	return (start);
+}
+
+int	ft_count(char **p)
+{
+	int	count;
+
+	count = 0;
+	while (p && p[count])
+		count++;
+	return (count);
 }
