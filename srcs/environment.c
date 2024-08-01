@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:27:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/01 21:49:40 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/01 22:22:27 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,11 @@ int	ft_setenv(char ***envpp, char *name, char *value)
 	char	**env_item;
 	char	**envp;
 
+	if (envpp == NULL || name == NULL || value == NULL)
+	{
+		errno = EINVAL;
+		return (-1);
+	}
 	envp = *envpp;
 	env_item = ft_getenv_item(envp, name);
 	if (env_item != NULL)

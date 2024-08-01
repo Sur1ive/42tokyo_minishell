@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:07:41 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/01 13:23:07 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/01 22:14:44 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,12 @@
 
 int	export(char **args, char ***envpp)
 {
+	char	**env_item;
 	char	*name;
-	char	*value;
 
-	name = args[1];
-	value = args[2];
-	ft_setenv(envpp, name, value);
+
+	env_item = ft_getenv_item(*envpp, args[1]);
+
+	*env_item = ft_strdup(args[1]);
 	return (0);
 }

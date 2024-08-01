@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/01 13:43:36 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/01 22:11:26 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	free2(char **p);
 char	*ft_strjoin3(char *s1, char *s2, char *s3);
 int		ft_setenv(char ***envpp, char *name, char *value);
 char	*ft_getenv(char **envp, char *name);
+char	**ft_getenv_item(char **envp, char *name);
 int		ft_count(char **p);
 char	**parseline(char *line);
 int		init_envp(char ***envpp);

@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 21:38:38 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/01 21:39:08 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/01 22:18:50 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,16 @@
 
 int	init_envp(char ***envpp)
 {
+	int	flag;
+
 	*envpp = NULL;
-	ft_setenv(envpp, "PWD", getenv("PWD"));
-	ft_setenv(envpp, "HOME", getenv("HOME"));
+	flag = 0;
+	flag += ft_setenv(envpp, "PWD", getenv("PWD"));
+	flag += ft_setenv(envpp, "HOME", getenv("HOME"));
+	if (flag < 0)
+	{
+		printf("bash: cd: %s\n", strerror(errno));
+		return (-1);
+	}
 	return (0);
 }
