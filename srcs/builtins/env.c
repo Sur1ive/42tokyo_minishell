@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 14:52:08 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/01 12:11:28 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/02 13:57:21 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@ int	env(char **envp)
 	if (envp == NULL)
 		return (0);
 	while (envp[i])
-		printf("%s\n", envp[i++]);
+	{
+		if (envp[i][0] != '\0')
+			printf("%s\n", envp[i]);
+		i++;
+	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/01 22:11:26 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/02 12:14:58 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,6 @@ int		pwd(void);
 int		env(char **envp);
 int		cd(char **args, char ***envpp);
 int		export(char **args, char ***envpp);
+int		unset(char **args, char ***envpp);
 
 #endif

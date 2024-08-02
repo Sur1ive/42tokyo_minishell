@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/01 13:49:52 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/02 12:15:40 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int	is_builtin(char *command)
 {
 	if (!(ft_strcmp(command, "echo") && ft_strcmp(command, "pwd")
 			&& ft_strcmp(command, "env") && ft_strcmp(command, "cd")
-			&& ft_strcmp(command, "export")))
+			&& ft_strcmp(command, "export") && ft_strcmp(command, "unset")))
 		return (1);
 	return (0);
 }
@@ -57,6 +57,8 @@ static int	exec_bulitin(char **args, char ***envpp)
 		return (cd(args, envpp));
 	if (ft_strcmp(command, "export") == 0)
 		return (export(args, envpp));
+	if (ft_strcmp(command, "unset") == 0)
+		return (unset(args, envpp));
 	return (-1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 14:52:04 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/02 11:13:18 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/02 14:13:48 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ static int	setpwdenv(char ***envpp)
 		printf("minishell: cd: %s\n", strerror(errno));
 		return (-1);
 	}
+	if (ft_getenv_item(*envpp, "PWD") == NULL)
+		return (0);
 	if (ft_setenv(envpp, "PWD", workdir) == -1)
 	{
 		printf("minishell: cd: %s\n", strerror(errno));
@@ -35,7 +37,7 @@ int	cd(char **args, char ***envpp)
 	char	*dir;
 
 	if (args[1] == NULL)
-		dir = ft_getenv(*envpp, "HOME");
+		dir = ".";
 	else if (args[2])
 	{
 		printf("minishell: cd: too many arguments\n");

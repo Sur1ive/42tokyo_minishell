@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/29 15:43:37 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/02 14:18:31 by yxu              ###   ########.fr       */
+/*   Created: 2024/08/02 12:13:50 by yxu               #+#    #+#             */
+/*   Updated: 2024/08/02 13:51:26 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*pretreatline(char *line)
+int	unset(char **args, char ***envpp)
 {
-	return (line);
-}
+	char	**env_item;
+	int		i;
 
-char	**parseline(char *line)
-{
-	char	**command;
-
-	line = pretreatline(line);
-	command = ft_split(line, ' ');
-	return (command);
+	i = 1;
+	while (args[i])
+	{
+		env_item = ft_getenv_item(*envpp, args[i++]);
+		if (env_item == NULL)
+			continue ;
+		*env_item[0] = '\0';
+	}
+	return (0);
 }
