@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 14:52:12 by yxu               #+#    #+#             */
-/*   Updated: 2024/07/31 14:52:54 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/02 11:12:42 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	pwd(void)
 	ft_memset(workdir, 0, PATH_MAX + 1);
 	if (getcwd(workdir, PATH_MAX) == NULL)
 	{
-		printf("bash: pwd: %s\n", strerror(errno));
+		printf("minishell: pwd: %s\n", strerror(errno));
 		return (1);
 	}
 	printf("%s\n", workdir);
