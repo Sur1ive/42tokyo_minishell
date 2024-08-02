@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/02 12:15:40 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/02 16:55:11 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	exec(char **args, char ***envpp)
 		exec_bulitin(args, envpp);
 	else
 		exec_extern(args, *envpp);
-	free2(args);
 	return (0);
 }
 
@@ -78,11 +77,11 @@ static char	*search_executale(char *command, char *filepath_dest)
 		free(filepath_malloc);
 		if (access(filepath_dest, X_OK) == 0)
 		{
-			free(dirs);
+			free2(dirs);
 			return (filepath_dest);
 		}
 	}
-	free(dirs);
+	free2(dirs);
 	return (NULL);
 }
 

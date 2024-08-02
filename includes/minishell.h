@@ -48,5 +48,6 @@ int		env(char **envp);
 int		cd(char **args, char ***envpp);
 int		export(char **args, char ***envpp);
 int		unset(char **args, char ***envpp);
+void	set_signal(void);
 
 #endif
