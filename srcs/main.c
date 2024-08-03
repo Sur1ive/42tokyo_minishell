@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/02 16:51:25 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/03 18:36:25 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ int	main(int argc, char **argv)
 	set_signal();
 	if (argc > 1)
 	{
-		(void)argv;
-		// exec
+		exec_file(&argv[1], &envp);
+		free2(envp);
 		return (0);
 	}
 	input = readline("$ ");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/02 12:14:58 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/03 18:43:43 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,32 @@
 
 # define PATH_MAX 4096
 
-void	free2(char **p);
-char	*ft_strjoin3(char *s1, char *s2, char *s3);
+// init functions
+void	set_signal(void);
+int		init_envp(char ***envpp);
+
+// processor functions
+char	**parseline(char *line);
+int		exec(char **args, char ***envpp);
+int		exec_cmd(char **args, char ***envpp);
+int		exec_file(char **args, char ***envpp);
+
+// functions about environment variables
 int		ft_setenv(char ***envpp, char *name, char *value);
 char	*ft_getenv(char **envp, char *name);
 char	**ft_getenv_item(char **envp, char *name);
-int		ft_count(char **p);
-char	**parseline(char *line);
-int		init_envp(char ***envpp);
-int		exec(char **args, char ***envpp);
+
+// builtin funcitons
 int		echo(char **args);
 int		pwd(void);
 int		env(char **envp);
 int		cd(char **args, char ***envpp);
 int		export(char **args, char ***envpp);
 int		unset(char **args, char ***envpp);
-void	set_signal(void);
+
+// utilities
+void	free2(char **p);
+char	*ft_strjoin3(char *s1, char *s2, char *s3);
+int		ft_count(char **p);
 
 #endif

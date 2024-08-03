@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 10:27:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/01 22:22:27 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/03 17:57:35 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,14 @@ char	**ft_getenv_item(char **envp, char *name)
 
 char	*ft_getenv(char **envp, char *name)
 {
+	char	**env_item;
+
 	if (envp == NULL)
 		return ("");
-	return (*ft_getenv_item(envp, name) + ft_strlen(name) + 1);
+	env_item = ft_getenv_item(envp, name);
+	if (env_item == NULL)
+		return (NULL);
+	return (*env_item + ft_strlen(name) + 1);
 }
 
 static int	ft_addenv(char ***envpp, char *name, char *value)
