@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/03 18:37:05 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/03 19:01:27 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,10 @@ static int	exec_bulitin(char **args, char ***envpp)
 
 static char	*search_executale(char *command, char *filepath_dest, char *path)
 {
-	char	*filepath_malloc;
-	char	**dirs;
-	int		i;
+	char		*filepath_malloc;
+	char		**dirs;
+	int			i;
+	struct stat	st;
 
 	dirs = ft_split(path, ':');
 	if (dirs == NULL)
@@ -75,7 +76,7 @@ static char	*search_executale(char *command, char *filepath_dest, char *path)
 		ft_memset(filepath_dest, 0, PATH_MAX + 1);
 		ft_memcpy(filepath_dest, filepath_malloc, ft_strlen(filepath_malloc));
 		free(filepath_malloc);
-		if (access(filepath_dest, X_OK) == 0)
+		if (stat(filepath_dest, &st) == 0)
 		{
 			free2(dirs);
 			return (filepath_dest);
@@ -97,7 +98,11 @@ static int	exec_extern(char **args, char **envp)
 	}
 	pid = fork();
 	if (pid == 0)
-		execve(filepath, args, envp);
+	{
+		if (execve(filepath, args, envp) != 0)
+			printf("minishell: %s: %s\n", filepath, strerror(errno));
+		exit(0);
+	}
 	else
 	{
 		wait(NULL);
