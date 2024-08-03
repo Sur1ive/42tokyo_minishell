@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/03 19:01:27 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/03 19:09:04 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ static int	exec_extern(char **args, char **envp)
 	{
 		if (execve(filepath, args, envp) != 0)
 			printf("minishell: %s: %s\n", filepath, strerror(errno));
-		exit(0);
+		exit(errno);
 	}
 	else
 	{

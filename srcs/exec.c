@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 18:36:14 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/03 18:36:33 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/03 19:27:22 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	exec_file(char **args, char ***envpp)
 		if (execve(args[0], args, *envpp) != 0)
 		{
 			printf("minishell: %s\n", strerror(errno));
-			return (-1);
+			exit(errno);
 		}
 		return (0);
 	}
@@ -40,12 +40,17 @@ int	exec(char **args, char ***envpp)
 
 	if (args[0] == NULL)
 		return (0);
-	if (stat(args[0], &st) == 0)
-		result = exec_file(args, envpp);
-	else
+	if (ft_strchr(args[0], '/') != NULL)
 	{
-		printf("minishell test: %s\n", strerror(errno));
-		result = exec_cmd(args, envpp);
+		stat(args[0], &st);
+		if (S_ISDIR(st.st_mode))
+		{
+			printf("minishell test: %s: Is a directory\n", args[0]);
+			return (-1);
+		}
+		result = exec_file(args, envpp);
 	}
+	else
+		result = exec_cmd(args, envpp);
 	return (result);
 }
