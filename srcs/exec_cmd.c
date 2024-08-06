@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/06 21:05:01 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/06 21:20:42 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	is_builtin(char *command);
 static int	exec_bulitin(char **args, char ***envpp);
-static char	*search_executale(char *command, char *filepath_dest, char *path);
+static char	*search_executable(char *command, char *filepath_dest, char *path);
 static int	exec_extern(char **args, char **envp);
 int			exec_cmd(char **args, char ***envpp);
 
@@ -59,7 +59,7 @@ static int	exec_bulitin(char **args, char ***envpp)
 	return (-1);
 }
 
-static char	*search_executale(char *command, char *filepath_dest, char *path)
+static char	*search_executable(char *command, char *filepath_dest, char *path)
 {
 	char		*filepath_malloc;
 	char		**dirs;
@@ -91,7 +91,7 @@ static int	exec_extern(char **args, char **envp)
 	char	filepath[PATH_MAX + 1];
 	pid_t	pid;
 
-	if (search_executale(args[0], filepath, ft_getenv(envp, "PATH")) == NULL)
+	if (search_executable(args[0], filepath, ft_getenv(envp, "PATH")) == NULL)
 	{
 		printf("%s: command not found\n", args[0]);
 		return (127);

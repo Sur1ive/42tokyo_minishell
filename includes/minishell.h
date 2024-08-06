@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/03 19:07:40 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/06 21:19:55 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@
 # include <errno.h>
 # include "../libft/libft.h"
 
-# define PATH_MAX 4096
+# ifndef PATH_MAX
+#  define PATH_MAX 4096
+# endif
 
 // init functions
 void	set_signal(void);
