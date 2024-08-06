@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/03 18:36:25 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/06 21:00:46 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(int argc, char **argv)
 	char	**args;
 	char	**envp;
 
-	init_envp(&envp);
+	init_envp(&envp); /*環境変数メモリ空間*/
 	set_signal();
 	if (argc > 1)
 	{
@@ -39,3 +39,5 @@ int	main(int argc, char **argv)
 	free2(envp);
 	return (0);
 }
+
+
