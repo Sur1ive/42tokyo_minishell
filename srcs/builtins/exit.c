@@ -1,21 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/15 13:41:57 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/29 13:49:20 by yxu              ###   ########.fr       */
+/*   Created: 2024/08/29 13:42:46 by yxu               #+#    #+#             */
+/*   Updated: 2024/08/29 13:45:03 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-void	ft_lstadd_front(t_list **lst, t_list *node)
+void	builtin_exit(char **envp)
 {
-	if (lst == NULL || node == NULL)
-		return ;
-	node->next = *lst;
-	*lst = node;
+	free2(envp);
+	exit(0);
 }

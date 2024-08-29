@@ -1,6 +1,6 @@
 NAME	= minishell
 SRC_DIR = srcs/
-SRCS	= builtins/cd.c builtins/echo.c builtins/env.c builtins/pwd.c builtins/export.c builtins/unset.c\
+SRCS	= builtins/exit.c builtins/cd.c builtins/echo.c builtins/env.c builtins/pwd.c builtins/export.c builtins/unset.c\
 		main.c parse.c utils.c exec_cmd.c exec.c environment.c init.c
 SRCS	:= $(addprefix $(SRC_DIR), $(SRCS))
 OBJS	= $(SRCS:.c=.o)

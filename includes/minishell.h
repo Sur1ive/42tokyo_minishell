@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/09 16:09:03 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/29 13:47:44 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ int		pwd(void);
 int		env(char **envp);
 int		cd(char **args, char ***envpp);
 int		export(char **args, char ***envpp);
+void	builtin_exit(char **envp);
 
 // unsetする環境変数をfreeしなく、空の文字列に書き換える
 int		unset(char **args, char ***envpp);
