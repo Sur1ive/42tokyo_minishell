@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:33 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/01 13:11:17 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/01 16:30:25 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// free char **
 void	free2(char **p)
 {
 	int	i;
@@ -53,4 +54,31 @@ int	ft_count(char **p)
 	while (p && p[count])
 		count++;
 	return (count);
+}
+
+char	*ft_strndup(char *s, size_t n)
+{
+	size_t	len;
+	char	*new_str;
+
+	len = ft_strlen(s);
+	new_str = malloc(len + 1);
+	if (!new_str)
+		return (NULL);
+	ft_memcpy(new_str, s, n);
+	new_str[n] = '\0';
+	return (new_str);
+}
+
+char	*ft_strncat(char *dst, const char *src, size_t n)
+{
+	char	*dst_ptr;
+
+	dst_ptr = dst;
+	while (*dst_ptr != '\0')
+		dst_ptr++;
+	while (n-- && *src != '\0')
+		*dst_ptr++ = *src++;
+	*dst_ptr = '\0';
+	return (dst);
 }
