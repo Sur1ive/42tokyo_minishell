@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 16:39:32 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/03 01:32:37 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/03 01:52:44 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static char	*process_variable(char **line, char **envp)
 	char	*var_value;
 
 	(*line)++;
-	if (!**line || !isalnum(**line) && **line != '_')
+	if (!**line || (!ft_isalnum(**line) && **line != '_'))
 		return (ft_strdup("$"));
 	var_name = extract_var_name(line);
 	if (var_name)
