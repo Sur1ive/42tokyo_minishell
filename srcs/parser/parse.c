@@ -6,14 +6,15 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:37 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/02 04:05:08 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/03 01:22:17 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**split_command(char *line, char **command);
-char	**handle_env(char **cmd, char **envp);
+char		**split_command(char *line, char **command);
+char		**handle_env(char **cmd, char **envp);
+t_cmd_table	*parse_command_with_redirection(char **command);
 
 char	*ft_strjoin_free(char const *s1, char const *s2)
 {
@@ -73,7 +74,7 @@ int	count_words(const char *line)
 
 char	**parseline(char *line, char **envp)
 {
-	char	**command;
+	char		**command;
 
 	command = NULL;
 	command = split_command(line, command);
@@ -81,6 +82,6 @@ char	**parseline(char *line, char **envp)
 		command = handle_env(command, envp);
 	if (!command)
 		return (NULL);
-/*commandがNULLになった時どうする（malloc失敗時）*/
+	/*commandがNULLになった時どうする（malloc失敗時）*/
 	return (command);
 }

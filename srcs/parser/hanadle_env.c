@@ -6,14 +6,14 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 16:39:32 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/02 04:21:42 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/03 01:20:11 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 char		*ft_strjoin_free(char const *s1, char const *s2);
-static char	*handle_token(char *cmd, char **envp);
+static char	*handle_token(char *cmd, char **envp, bool flag);
 
 static char	*extract_var_name(char **line)
 {
@@ -34,10 +34,11 @@ static char	*process_variable(char **line, char **envp)
 	var_name = extract_var_name(line);
 	if (var_name)
 	{
-		var_value = ft_strdup(ft_getenv(envp, var_name));
+		var_value = ft_getenv(envp, var_name);
 		if (var_value)
 		{
 			free(var_name);
+			var_value = ft_strdup(var_value);
 			return (var_value);
 		}
 		free(var_name);
@@ -64,14 +65,14 @@ static char	*handle_quotes(char **cmd, char **envp)
 	else
 	{
 		sub_str = ft_strndup(*cmd + 1, end - *cmd - 1);
-		tmp = handle_token(sub_str, envp);
+		tmp = handle_token(sub_str, envp, 0);
 		free(sub_str);
 	}
 	*cmd = end + 1;
 	return (tmp);
 }
 
-static char	*handle_token(char *cmd, char **envp)
+static char	*handle_token(char *cmd, char **envp, bool	flag)
 {
 	char	*result;
 	char	*tmp;
@@ -79,7 +80,7 @@ static char	*handle_token(char *cmd, char **envp)
 	result = ft_strdup("");
 	while (*cmd)
 	{
-		if (*cmd == '"' || *cmd == '\'')
+		if (flag && (*cmd == '"' || *cmd == '\''))
 			tmp = handle_quotes(&cmd, envp);
 		else if (*cmd == '$')
 			tmp = process_variable(&cmd, envp);
@@ -104,7 +105,7 @@ char	**handle_env(char **cmd, char **envp)
 	while (cmd[i])
 	{
 		s_ptr = cmd[i];
-		cmd[i] = handle_token(cmd[i], envp);
+		cmd[i] = handle_token(cmd[i], envp, 1);
 		if (cmd[i] == NULL)
 		{
 			free2(cmd);
