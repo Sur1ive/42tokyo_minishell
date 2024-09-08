@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/03 18:36:25 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/02 04:50:36 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(int argc, char **argv)
 	{
 		free(input);
 		add_history(rl_line_buffer);
-		args = parseline(rl_line_buffer);
+		args = parseline(rl_line_buffer, envp);
 		exec(args, &envp);
 		free2(args);
 		input = readline("$ ");

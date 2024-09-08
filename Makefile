@@ -1,8 +1,6 @@
 NAME	= minishell
 SRC_DIR = srcs/
-SRCS	= builtins/exit.c builtins/cd.c builtins/echo.c builtins/env.c builtins/pwd.c builtins/export.c builtins/unset.c\
-		main.c parse.c utils.c exec_cmd.c exec.c environment.c init.c
-SRCS	:= $(addprefix $(SRC_DIR), $(SRCS))
+SRCS	= $(shell find $(SRC_DIR) -type f -name "*.c")
 OBJS	= $(SRCS:.c=.o)
 LIB		= ./libft/libft.a
 CC		= cc -Wall -Wextra -Werror -Iincludes

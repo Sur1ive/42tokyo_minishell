@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/29 13:47:44 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/08 13:33:34 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,19 @@
 # include <dirent.h>
 # include <termios.h>
 # include <errno.h>
+# include <stdbool.h>
 # include "../libft/libft.h"
 
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
 # endif
+
+typedef struct s_flags
+{
+	char	*start;
+	bool	in_word;
+	bool	new_word_start;
+}	t_flags;
 
 /*------------------init functions---------------------*/
 
@@ -47,7 +55,7 @@ int		init_envp(char ***envpp);
 /*--------------processor functions --------------------*/
 
 // Inputを解析する(未完成)
-char	**parseline(char *line);
+char	**parseline(char *line, char **envp);
 
 // 解析されたcommand lineを実行する。
 // args example: ["./minishell", "echo", "-n", "hello" "world"]
@@ -103,5 +111,11 @@ char	*ft_strjoin3(char *s1, char *s2, char *s3);
 
 // 要素数をカウントする
 int		ft_count(char **p);
+
+char	*ft_strndup(char *s, size_t n);
+
+char	*ft_strncat(char *dst, const char *src, size_t n);
+
+/*---------------------utilitie-------------------------*/
 
 #endif
