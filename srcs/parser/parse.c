@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:37 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/03 01:22:17 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/08 17:45:49 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,5 @@ char	**parseline(char *line, char **envp)
 		command = handle_env(command, envp);
 	if (!command)
 		return (NULL);
-	/*commandがNULLになった時どうする（malloc失敗時）*/
 	return (command);
 }

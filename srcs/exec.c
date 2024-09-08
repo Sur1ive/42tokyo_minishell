@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 18:36:14 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/08 15:08:25 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/08 17:39:33 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	exec(char **args, char ***envpp)
 	struct stat	st;
 	int			result;
 
-	if (args[0] == NULL)
+	if (!args || args[0] == NULL)
 		return (0);
 	if (ft_strchr(args[0], '/') != NULL)
 	{
