@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
+/*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/15 13:41:57 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/29 13:49:20 by yxu              ###   ########.fr       */
+/*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
+/*   Updated: 2024/09/08 15:04:47 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-void	ft_lstadd_front(t_list **lst, t_list *node)
-{
-	if (lst == NULL || node == NULL)
-		return ;
-	node->next = *lst;
-	*lst = node;
-}
+
+
+// int	executor(t_cmd_table *cmds, char ***envpp)
+// {
+// 	exec(cmds->cmd, envpp);
+
+// }

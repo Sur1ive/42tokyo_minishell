@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/01 16:42:48 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/08 15:07:06 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,14 @@ typedef struct s_flags
 	bool	new_word_start;
 }	t_flags;
 
+typedef struct s_cmd_table
+{
+	struct s_cmd_table	*next;
+	char				**cmd;
+	int					in;
+	int					out;
+}	t_cmd_table;
+
 /*------------------init functions---------------------*/
 
 // ctrl-c, ctrl-d, ctrl-\の動作を設定する。
@@ -60,15 +68,10 @@ char	**parseline(char *line, char **envp);
 // 解析されたcommand lineを実行する。
 // args example: ["./minishell", "echo", "-n", "hello" "world"]
 // コマンドに'/'が含まれる場合、exec_file()を呼び出す、それ以外の場合はexec_cmd()
-// echo hello world ----> exec_cmd()
-// ./minishell  ----> exec_file()
 int		exec(char **args, char ***envpp);
 
-// 環境変数PATH配下にで指定されたコマンドを探して実行する。
-int		exec_cmd(char **args, char ***envpp);
-
-// args[0]で指定されたファイルを実行する
-int		exec_file(char **args, char ***envpp);
+// filepathで指定されたファイルを実行する
+int		exec_file(char *filepath, char **args, char **envp);
 
 /*----------functions about environment variables--------*/
 
@@ -91,11 +94,14 @@ char	**ft_getenv_item(char **envp, char *name);
 
 /*-----------------builtin funcitons---------------------*/
 
+int		is_builtin(char *command);
+int		exec_bulitin(char **args, char ***envpp);
 int		echo(char **args);
 int		pwd(void);
 int		env(char **envp);
 int		cd(char **args, char ***envpp);
 int		export(char **args, char ***envpp);
+void	builtin_exit(char **envp);
 
 // unsetする環境変数をfreeしなく、空の文字列に書き換える
 int		unset(char **args, char ***envpp);

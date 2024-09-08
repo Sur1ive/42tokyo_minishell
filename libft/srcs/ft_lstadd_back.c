@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_back_bonus.c                             :+:      :+:    :+:   */
+/*   ft_lstadd_back.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 13:41:57 by yxu               #+#    #+#             */
-/*   Updated: 2023/09/26 15:46:20 by yxu              ###   ########.fr       */
+/*   Updated: 2024/08/29 13:49:42 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstadd_back(t_list **lst, t_list *new)
+void	ft_lstadd_back(t_list **lst, t_list *node)
 {
 	t_list	*p;
 
-	if (lst == NULL || new == NULL)
+	if (lst == NULL || node == NULL)
 		return ;
 	if (*lst)
 	{
 		p = *lst;
 		while (p->next)
 			p = p->next;
-		p->next = new;
+		p->next = node;
 	}
 	else
-		*lst = new;
+		*lst = node;
 }
