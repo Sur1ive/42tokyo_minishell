@@ -70,12 +70,10 @@ int		init_envp(char ***envpp);
 t_cmd_table	*parseline(char *line, char **envp);
 
 // 解析されたcommand lineを実行する。
-// args example: ["./minishell", "echo", "-n", "hello" "world"]
-// コマンドに'/'が含まれる場合、exec_file()を呼び出す、それ以外の場合はexec_cmd()
+// PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。
 int		exec(char **args, char ***envpp);
 
-// filepathで指定されたファイルを実行する
-int		exec_file(char *filepath, char **args, char **envp);
+int		executor(t_cmd_table *cmd, char ***envpp);
 
 /*----------functions about environment variables--------*/
 

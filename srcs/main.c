@@ -12,32 +12,25 @@
 
 #include "minishell.h"
 
-int	executor(t_cmd_table *cmd, char ***envpp);
+t_cmd_table	*parseline_for_test(char *line);
+void		freecmd_for_test(t_cmd_table *cmd);
 
-int	main(int argc, char **argv)
+int	main(void)
 {
-	char	*input;
-	t_cmd_table	*args;
-	char	**envp;
+	char		*input;
+	char		**envp;
+	t_cmd_table	*cmds;
 
 	init_envp(&envp);
 	set_signal();
-	if (argc > 1)
-	{
-		exec_file(argv[1], &argv[1], envp);
-		free2(envp);
-		return (0);
-	}
 	input = readline("$ ");
 	while (input != NULL)
 	{
 		free(input);
 		add_history(rl_line_buffer);
-		args = parseline(rl_line_buffer, envp);
-		// args = ft_split(rl_line_buffer, ' ');
-		// exec(args, &envp);
-		executor(args, &envp);
-		// free2(args);
+		cmds = parseline_for_test(rl_line_buffer);
+		executor(cmds, &envp);
+		freecmd_for_test(cmds);
 		input = readline("$ ");
 	}
 	free2(envp);

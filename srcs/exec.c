@@ -48,7 +48,7 @@ static int	exec_extern(char **args, char **envp)
 		printf("%s: command not found\n", args[0]);
 		return (127);
 	}
-	return (exec_file(filepath, args, envp));
+	return (execve(filepath, args, envp));
 }
 
 static int	exec_cmd(char **args, char ***envpp)
@@ -63,27 +63,6 @@ static int	exec_cmd(char **args, char ***envpp)
 	return (0);
 }
 
-int	exec_file(char *filepath, char **args, char **envp)
-{
-	pid_t	pid;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		if (execve(filepath, args, envp) != 0)
-		{
-			printf("minishell: %s\n", strerror(errno));
-			exit(errno);
-		}
-		return (0);
-	}
-	else
-	{
-		wait(NULL);
-		return (0);
-	}
-}
-
 int	exec(char **args, char ***envpp)
 {
 	struct stat	st;
@@ -91,6 +70,11 @@ int	exec(char **args, char ***envpp)
 
 	if (args == NULL || args[0] == NULL)
 		return (0);
+	if (ft_strcmp(args[0], ".") * ft_strcmp(args[0], "..") == 0)
+	{
+		printf("%s: command not found\n", args[0]);
+		return (-1);
+	}
 	if (ft_strchr(args[0], '/') != NULL)
 	{
 		stat(args[0], &st);
@@ -99,7 +83,7 @@ int	exec(char **args, char ***envpp)
 			printf("minishell: %s: Is a directory\n", args[0]);
 			return (-1);
 		}
-		result = exec_file(args[0], args, *envpp);
+		result = execve(args[0], args, *envpp);
 	}
 	else
 		result = exec_cmd(args, envpp);
