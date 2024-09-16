@@ -6,16 +6,18 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/08 16:58:58 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/16 20:52:15 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	executor(t_cmd_table *cmd, char ***envpp);
+
 int	main(int argc, char **argv)
 {
 	char	*input;
-	char	**args;
+	t_cmd_table	*args;
 	char	**envp;
 
 	init_envp(&envp);
@@ -33,8 +35,9 @@ int	main(int argc, char **argv)
 		add_history(rl_line_buffer);
 		args = parseline(rl_line_buffer, envp);
 		// args = ft_split(rl_line_buffer, ' ');
-		exec(args, &envp);
-		free2(args);
+		// exec(args, &envp);
+		executor(args, &envp);
+		// free2(args);
 		input = readline("$ ");
 	}
 	free2(envp);

@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:37 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/08 17:45:49 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/16 20:44:20 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 char		**split_command(char *line, char **command);
 char		**handle_env(char **cmd, char **envp);
+t_cmd_table	*parse_command_with_redirection(char **command);
 t_cmd_table	*parse_command_with_redirection(char **command);
 
 char	*ft_strjoin_free(char const *s1, char const *s2)
@@ -72,15 +73,17 @@ int	count_words(const char *line)
 	return (wc);
 }
 
-char	**parseline(char *line, char **envp)
+t_cmd_table	*parseline(char *line, char **envp)
 {
 	char		**command;
+	t_cmd_table	*cmd_table;
 
 	command = NULL;
 	command = split_command(line, command);
 	if (command)
 		command = handle_env(command, envp);
+	cmd_table = parse_command_with_redirection(command);
 	if (!command)
 		return (NULL);
-	return (command);
+	return (cmd_table);
 }

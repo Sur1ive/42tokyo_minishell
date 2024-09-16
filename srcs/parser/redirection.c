@@ -5,44 +5,18 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/08 17:58:59 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/08 18:01:30 by nakagawashi      ###   ########.fr       */
+/*   Created: 2024/09/16 20:26:35 by nakagawashi       #+#    #+#             */
+/*   Updated: 2024/09/16 21:19:58 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_cmd_table *create_cmd_table_entry(void)
-{
-	t_cmd_table	*entry;
-
-	entry = (t_cmd_table *)malloc(sizeof(t_cmd_table));
-	if (!entry)
-		return (NULL);
-	entry->cmd = NULL;
-	entry->in = 0;
-	entry->out = 1;
-	entry->next = NULL;
-	return (entry);
-}
-
-void	free_cmd_table(t_cmd_table *table)
-{
-	t_cmd_table	*tmp;
-
-	while (table)
-	{
-		tmp = table;
-		table = table->next;
-		free(tmp);
-	}
-}
-
-int	is_redirection(char *token)
-{
-	return (strcmp(token, ">") == 0 || strcmp(token, ">>") == 0 ||
-			strcmp(token, "<") == 0 || strcmp(token, "<<") == 0);
-}
+t_cmd_table	*create_cmd_table_entry(void);
+void		free_cmd_table(t_cmd_table *table);
+int			is_redirection(char *token);
+void		*ft_realloc(void *ptr, size_t new_size);
+ssize_t		ft_getline(char **lineptr, size_t *n);
 
 int	handle_heredoc(char *delimiter)
 {
@@ -57,31 +31,28 @@ int	handle_heredoc(char *delimiter)
 		perror("pipe");
 		return (-1);
 	}
-	printf("heredoc> ");
-	while (getline(&line, &len, stdin) != -1)
+	ft_printf("heredoc> ");
+	while (ft_getline(&line, &len) != -1)
 	{
-		// デリミタが見つかるまで標準入力を読み続ける
-		printf("delimiter:%s\n",delimiter);
-		printf("line:%s\n",line);
-		if (strcmp(line, delimiter) == 0)
-			break;
-		// パイプの書き込み側に書き込む
-		write(pipefd[1], line, strlen(line));
-		printf("heredoc> ");
+		if (ft_strcmp(line, delimiter) == 0)
+			break ;
+		write(pipefd[1], line, ft_strlen(line));
+		ft_printf("heredoc> ");
 	}
 	free(line);
-	close(pipefd[1]); // 書き込み側を閉じる
-	return (pipefd[0]); // 読み取り側のファイルディスクリプタを返す
+	close(pipefd[1]);
+	return (pipefd[0]);
 }
 
-int	count_arguments(char **command)
+int	count_arg(char **command)
 {
 	int	count;
-	int i;
+	int	i;
 
 	count = 0;
 	i = 0;
-	while (command[i] && !is_redirection(command[i]) && ft_strcmp(command[i], "|") != 0)
+	while (command[i] && !is_redirection(command[i])
+		&& ft_strcmp(command[i], "|") != 0)
 	{
 		count++;
 		i++;
@@ -89,79 +60,62 @@ int	count_arguments(char **command)
 	return (count);
 }
 
-t_cmd_table *parse_command_with_redirection(char **command)
+void	handle_redirection(t_cmd_table *current, char **cmd, int *i, int *index)
+{
+	current->cmd[*index] = NULL;
+	if (strcmp(cmd[*i], ">") == 0)
+		current->out = open(cmd[*i + 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else if (strcmp(cmd[*i], ">>") == 0)
+		current->out = open(cmd[*i + 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else if (strcmp(cmd[*i], "<") == 0)
+		current->in = open(cmd[*i + 1], O_RDONLY);
+	else if (strcmp(cmd[*i], "<<") == 0)
+		current->in = handle_heredoc(cmd[*i + 1]);
+	*i += 2;
+}
+
+void	handle_pipe(t_cmd_table **current, int *cmd_index)
+{
+	int	pipefd[2];
+
+	if (pipe(pipefd) == -1)
+	{
+		perror("pipe");
+		return ;
+	}
+	(*current)->cmd[*cmd_index] = NULL;
+	(*current)->out = pipefd[1];
+	(*current)->next = create_cmd_table_entry();
+	*current = (*current)->next;
+	(*current)->in = pipefd[0];
+	*cmd_index = 0;
+}
+
+t_cmd_table	*parse_command_with_redirection(char **command)
 {
 	t_cmd_table	*table;
 	t_cmd_table	*current;
-	int 		i;
+	int			i;
 	int			cmd_index;
-	int			arg_count;
 
-	cmd_index = 0;
-	i = 0;
 	table = create_cmd_table_entry();
 	current = table;
+	i = 0;
+	cmd_index = 0;
 	while (command[i])
 	{
 		if (current->cmd == NULL)
-		{
-			arg_count = count_arguments(&command[i]);
-			current->cmd = malloc(sizeof(char *) * (arg_count + 1));
-		}
+			current->cmd = malloc(sizeof(char *) * (count_arg(&command[i]) + 1));
 		if (is_redirection(command[i]))
-		{
-			current->cmd[cmd_index] = NULL;
-			if (strcmp(command[i], ">") == 0)
-				current->out = open(command[i + 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			else if (strcmp(command[i], ">>") == 0)
-				current->out = open(command[i + 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-			else if (strcmp(command[i], "<") == 0)
-				current->in = open(command[i + 1], O_RDONLY);
-			else if (strcmp(command[i], "<<") == 0)
-				current->in = handle_heredoc(command[i + 1]);
-			i += 2;
-		}
+			handle_redirection(current, command, &i, &cmd_index);
 		else if (ft_strcmp(command[i], "|") == 0)
 		{
-			current->cmd[cmd_index] = NULL;
-			cmd_index = 0;
-			current->next = create_cmd_table_entry();
-			current = current->next;
+			handle_pipe(&current, &cmd_index);
 			i++;
 		}
 		else
-		{
-			current->cmd[cmd_index] = ft_strdup(command[i]);
-			cmd_index++;
-			i++;
-		}
+			current->cmd[cmd_index++] = ft_strdup(command[i++]);
 	}
-	current -> cmd[cmd_index] = NULL;
+	current->cmd[cmd_index] = NULL;
 	return (table);
 }
-
-// int main()
-// {
-//     char *command[] = {"cat", "<<", "EOF\n", NULL};
-
-//     t_cmd_table *start;
-//     int i;
-
-//     start = parse_command_with_redirection(command);
-//     while (start)
-//     {
-//         i = 0;
-//         printf("Command: ");
-//         while (start->cmd[i])
-//         {
-//             printf("%s ", start->cmd[i]);
-//             i++;
-//         }
-//         printf("\n");
-// 		printf("Input redirected from file descriptor: %d\n", start->in);
-// 		printf("Output redirected to file descriptor: %d\n", start->out);
-//         start = start->next;
-//         printf("\n");
-//     }
-//     return 0;
-// }
