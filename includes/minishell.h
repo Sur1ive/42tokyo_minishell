@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/08 15:07:06 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/16 19:41:59 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,10 @@ int		init_envp(char ***envpp);
 char	**parseline(char *line, char **envp);
 
 // 解析されたcommand lineを実行する。
-// args example: ["./minishell", "echo", "-n", "hello" "world"]
-// コマンドに'/'が含まれる場合、exec_file()を呼び出す、それ以外の場合はexec_cmd()
+// PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。
 int		exec(char **args, char ***envpp);
 
-// filepathで指定されたファイルを実行する
-int		exec_file(char *filepath, char **args, char **envp);
+int		executor(t_cmd_table *cmd, char ***envpp);
 
 /*----------functions about environment variables--------*/
 
