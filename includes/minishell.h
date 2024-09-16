@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/16 19:41:59 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/16 19:48:23 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@
 # include <errno.h>
 # include <stdbool.h>
 # include "../libft/libft.h"
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 100
+# endif
 
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
@@ -63,7 +67,7 @@ int		init_envp(char ***envpp);
 /*--------------processor functions --------------------*/
 
 // Inputを解析する(未完成)
-char	**parseline(char *line, char **envp);
+t_cmd_table	*parseline(char *line, char **envp);
 
 // 解析されたcommand lineを実行する。
 // PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。

@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 03:54:38 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/02 04:03:50 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/08 17:41:07 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ static char	**handle_quote(char **cmd, char **line, int *i, t_flags *flag)
 	quote = **line;
 	end = ft_strchr(*line + 1, quote);
 	if (!end)
-		return (cmd);
+	{
+		free2(cmd);
+		return (NULL);
+	}
 	q_str = ft_strndup(*line, end - *line + 1);
 	if (!q_str)
 		return (NULL);
@@ -93,6 +96,8 @@ static char	**split_command_sub(char **cmd, char **line, int *i, t_flags *flag)
 		else if (**line == '\'' || **line == '"')
 		{
 			cmd = handle_quote(cmd, line, i, flag);
+			if (!cmd)
+				errno = EINVAL;
 			*i += 1;
 		}
 		else if (**line != ' ' && **line != '\t' && !(flag->in_word))
