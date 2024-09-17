@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 13:53:13 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/08 13:53:56 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/17 21:08:26 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,6 @@ int	exec_bulitin(char **args, char ***envpp)
 	if (ft_strcmp(command, "unset") == 0)
 		return (unset(args, envpp));
 	if (ft_strcmp(command, "exit") == 0)
-		builtin_exit(*envpp);
-	return (-1);
+		return (builtin_exit(args));
+	return (CMD_NOT_FOUND);
 }

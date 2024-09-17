@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/16 19:48:23 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/17 22:23:26 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,19 @@
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
 # endif
+
+// exit codeのグローバル変数
+extern int	g_exit_code;
+
+// g_exit_codeの値
+# define EXIT_SUCCESS 0
+# define GENERAL_ERR 1
+# define MISUSE_OF_BUILTINS 2
+# define CANNOT_EXEC 126
+# define CMD_NOT_FOUND 127
+# define INVALID_EXITCODE 128
+# define MANUAL_TERM 130
+# define EXITCODE_OUT_OF_RANGE 255
 
 typedef struct s_flags
 {
@@ -73,7 +86,8 @@ t_cmd_table	*parseline(char *line, char **envp);
 // PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。
 int		exec(char **args, char ***envpp);
 
-int		executor(t_cmd_table *cmd, char ***envpp);
+void	executor(t_cmd_table *cmd, char ***envpp);
+void	freecmd(t_cmd_table *cmd);
 
 /*----------functions about environment variables--------*/
 
@@ -103,7 +117,7 @@ int		pwd(void);
 int		env(char **envp);
 int		cd(char **args, char ***envpp);
 int		export(char **args, char ***envpp);
-void	builtin_exit(char **envp);
+int		builtin_exit(char **args);
 
 // unsetする環境変数をfreeしなく、空の文字列に書き換える
 int		unset(char **args, char ***envpp);

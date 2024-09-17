@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:07:41 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/02 12:09:46 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/17 21:21:52 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	export(char **args, char ***envpp)
 		else
 		{
 			printf("minishell: export: %s: not a valid identifier\n", args[i]);
-			fail_flag = -1;
+			fail_flag = 1;
 		}
 		i++;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 21:38:38 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/03 18:40:00 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/17 22:20:14 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ static void	deal_signal(int signum)
 {
 	if (signum == SIGINT)
 	{
+		g_exit_code = MANUAL_TERM;
 		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);

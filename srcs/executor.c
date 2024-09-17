@@ -3,26 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/08 18:27:01 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/17 22:41:50 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_cmd_table	*parseline_for_test(char *line)
-{
-	t_cmd_table	*cmd;
-
-	cmd = (t_cmd_table *)malloc(sizeof(t_cmd_table));
-	cmd->cmd = ft_split(line, ' ');
-	cmd->next = NULL;
-	return (cmd);
-}
-
-void	freecmd_for_test(t_cmd_table *cmd)
+void	freecmd(t_cmd_table *cmd)
 {
 	t_cmd_table	*next;
 
@@ -35,39 +25,73 @@ void	freecmd_for_test(t_cmd_table *cmd)
 	}
 }
 
-int	executor(t_cmd_table *cmd, char ***envpp)
+void	printcmd(t_cmd_table *tab)
+{
+	int		i;
+	char	**cmd;
+
+	cmd = tab->cmd;
+	if (!cmd)
+		return ;
+	i = 0;
+	printf("------------------test--------------------\n");
+	printf("cmd: ");
+	while (cmd[i])
+		printf("%s, ", cmd[i++]);
+	printf("\n");
+	printf("next: %p, in: %d, out: %d\n", tab->next, tab->in, tab->out);
+	printf("------------------------------------------\n");
+}
+
+void	executor(t_cmd_table *cmd, char ***envpp)
 {
 	pid_t	pid;
+	int		result;
 
 	if (cmd && cmd->next == NULL && cmd->cmd[0] && is_builtin(cmd->cmd[0]))
 	{
-		exec_bulitin((cmd->cmd), envpp);
-		return (0);
+		result = exec_bulitin((cmd->cmd), envpp);
+		if (result < 0)
+		{
+			freecmd(cmd);
+			free2(*envpp);
+			exit(g_exit_code);
+		}
+		g_exit_code = result;
+		return ;
 	}
 	while (cmd && cmd->cmd[0])
 	{
+		// printcmd(cmd);
 		pid = fork();
 		if (pid == -1)
 		{
 			printf("minishell: %s\n", strerror(errno));
-			freecmd_for_test(cmd);
-			free2(*envpp);
-			exit(errno);
+			g_exit_code = 1;
 		}
 		if (pid == 0)
 		{
-			if (exec(cmd->cmd, envpp) != 0 && errno)
+			if (cmd->in != 0)
 			{
-				printf("minishell: %s\n", strerror(errno));
-				freecmd_for_test(cmd);
-				exit(errno);
+				dup2(cmd->in, STDIN_FILENO);
+				close(cmd->in);
 			}
-			freecmd_for_test(cmd);
+			if (cmd->out != 1)
+			{
+				dup2(cmd->out, STDOUT_FILENO);
+				close(cmd->out);
+			}
+			if (exec(cmd->cmd, envpp) != 0)
+			{
+				if (errno)
+					printf("minishell: %s\n", strerror(errno));
+				exit(GENERAL_ERR);
+			}
 			exit(EXIT_SUCCESS);
 		}
 		else
-			wait(NULL);
+			wait(&g_exit_code);
 		cmd = cmd->next;
 	}
-	return (0);
+	return ;
 }
