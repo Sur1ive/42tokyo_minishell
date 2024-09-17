@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 18:36:14 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/08 18:09:05 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/17 17:55:53 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int	exec_extern(char **args, char **envp)
 	if (search_executable(args[0], filepath, ft_getenv(envp, "PATH")) == NULL)
 	{
 		printf("%s: command not found\n", args[0]);
-		return (127);
+		return (CMD_NOT_FOUND);
 	}
 	return (execve(filepath, args, envp));
 }
@@ -57,10 +57,9 @@ static int	exec_cmd(char **args, char ***envpp)
 
 	command = args[0];
 	if (is_builtin(command))
-		exec_bulitin(args, envpp);
+		return (exec_bulitin(args, envpp));
 	else
-		exec_extern(args, *envpp);
-	return (0);
+		return (exec_extern(args, *envpp));
 }
 
 int	exec(char **args, char ***envpp)
@@ -73,7 +72,7 @@ int	exec(char **args, char ***envpp)
 	if (ft_strcmp(args[0], ".") * ft_strcmp(args[0], "..") == 0)
 	{
 		printf("%s: command not found\n", args[0]);
-		return (-1);
+		return (CMD_NOT_FOUND);
 	}
 	if (ft_strchr(args[0], '/') != NULL)
 	{
@@ -81,7 +80,7 @@ int	exec(char **args, char ***envpp)
 		if (S_ISDIR(st.st_mode))
 		{
 			printf("minishell: %s: Is a directory\n", args[0]);
-			return (-1);
+			return (CANNOT_EXEC);
 		}
 		result = execve(args[0], args, *envpp);
 	}

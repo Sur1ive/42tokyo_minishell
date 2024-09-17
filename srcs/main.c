@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/16 20:52:15 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/17 22:02:24 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_cmd_table	*parseline_for_test(char *line);
-void		freecmd_for_test(t_cmd_table *cmd);
+int	g_exit_code = 0;
 
 int	main(void)
 {
@@ -28,9 +27,9 @@ int	main(void)
 	{
 		free(input);
 		add_history(rl_line_buffer);
-		cmds = parseline_for_test(rl_line_buffer);
+		cmds = parseline(rl_line_buffer, envp);
 		executor(cmds, &envp);
-		freecmd_for_test(cmds);
+		freecmd(cmds);
 		input = readline("$ ");
 	}
 	free2(envp);
