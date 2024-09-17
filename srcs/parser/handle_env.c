@@ -31,8 +31,13 @@ static char	*process_variable(char **line, char **envp)
 	char	*var_value;
 
 	(*line)++;
-	if (!**line || (!ft_isalnum(**line) && **line != '_'))
+	if (!**line || ((!ft_isalnum(**line) && **line != '_') && **line != '?'))
 		return (ft_strdup("$"));
+	if (**line == '?')
+	{
+		(*line)++;
+		return (ft_strdup(ft_itoa(g_exit_code)));
+	}
 	var_name = extract_var_name(line);
 	if (var_name)
 	{

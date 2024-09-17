@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 20:26:35 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/16 21:19:58 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/18 01:47:35 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	handle_redirection(t_cmd_table *current, char **cmd, int *i, int *index)
 	*i += 2;
 }
 
-void	handle_pipe(t_cmd_table **current, int *cmd_index)
+void	handle_pipe(t_cmd_table **current, int *cmd_index, int *i)
 {
 	int	pipefd[2];
 
@@ -89,6 +89,7 @@ void	handle_pipe(t_cmd_table **current, int *cmd_index)
 	*current = (*current)->next;
 	(*current)->in = pipefd[0];
 	*cmd_index = 0;
+	*i += 1;
 }
 
 t_cmd_table	*parse_command_with_redirection(char **command)
@@ -109,13 +110,13 @@ t_cmd_table	*parse_command_with_redirection(char **command)
 		if (is_redirection(command[i]))
 			handle_redirection(current, command, &i, &cmd_index);
 		else if (ft_strcmp(command[i], "|") == 0)
-		{
-			handle_pipe(&current, &cmd_index);
-			i++;
-		}
+			handle_pipe(&current, &cmd_index, &i);
 		else
 			current->cmd[cmd_index++] = ft_strdup(command[i++]);
 	}
-	current->cmd[cmd_index] = NULL;
+	if (i != 0)
+		current->cmd[cmd_index] = NULL;
+	else
+		current->cmd = ft_calloc(1, 1);
 	return (table);
 }
