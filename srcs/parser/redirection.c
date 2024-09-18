@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 20:26:35 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/18 22:52:26 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/19 02:19:07 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,11 @@ void	handle_redirection(t_cmd_table *current, char **cmd, int *i, int *index)
 	if (cmd[*i + 1])
 	{
 		if (strcmp(cmd[*i], ">") == 0)
-			current->out = open(cmd[*i + 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			current->out = open(cmd[*i + 1],
+					O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		else if (strcmp(cmd[*i], ">>") == 0)
-			current->out = open(cmd[*i + 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+			current->out = open(cmd[*i + 1],
+					O_WRONLY | O_CREAT | O_APPEND, 0644);
 		else if (strcmp(cmd[*i], "<") == 0)
 			current->in = open(cmd[*i + 1], O_RDONLY);
 		else if (strcmp(cmd[*i], "<<") == 0)
@@ -95,7 +97,7 @@ void	handle_pipe(t_cmd_table **current, int *cmd_index, int *i)
 	*i += 1;
 }
 
-t_cmd_table	*parse_command_with_redirection(char **command)
+t_cmd_table	*parse_command_with_redirection(char **cmd)
 {
 	t_cmd_table	*table;
 	t_cmd_table	*current;
@@ -106,16 +108,16 @@ t_cmd_table	*parse_command_with_redirection(char **command)
 	current = table;
 	i = 0;
 	cmd_index = 0;
-	while (command[i])
+	while (cmd[i])
 	{
 		if (current->cmd == NULL)
-			current->cmd = malloc(sizeof(char *) * (count_arg(&command[i]) + 1));
-		if (is_redirection(command[i]))
-			handle_redirection(current, command, &i, &cmd_index);
-		else if (ft_strcmp(command[i], "|") == 0)
+			current->cmd = malloc(sizeof(char *) * (count_arg(&cmd[i]) + 1));
+		if (is_redirection(cmd[i]))
+			handle_redirection(current, cmd, &i, &cmd_index);
+		else if (ft_strcmp(cmd[i], "|") == 0)
 			handle_pipe(&current, &cmd_index, &i);
 		else
-			current->cmd[cmd_index++] = ft_strdup(command[i++]);
+			current->cmd[cmd_index++] = ft_strdup(cmd[i++]);
 	}
 	if (i != 0)
 		current->cmd[cmd_index] = NULL;

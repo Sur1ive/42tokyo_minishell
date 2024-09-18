@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:37 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/19 00:10:47 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/19 02:20:47 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,23 @@ char	*ft_strjoin_free(char const *s1, char const *s2)
 static void	count_special_char(char **line, int *wc, bool *in_word)
 {
 	(*wc)++;
-	if ((**line == '>' && *(*line + 1) == '>') || (**line == '<' && *(*line + 1) == '<'))
+	if ((**line == '>' && *(*line + 1) == '>')
+		|| (**line == '<' && *(*line + 1) == '<'))
 		(*line)++;
 	*in_word = false;
 }
 
-int	count_words(const char *line)
+static void	count_q_word(char **line, char *quote_char, int *wc, bool *in_word)
+{
+	*quote_char = **line;
+	if (!(*in_word))
+	{
+		(*wc)++;
+		*in_word = true;
+	}
+}
+
+int	count_words(char *line)
 {
 	int		wc;
 	bool	in_word;
@@ -68,7 +79,7 @@ int	count_words(const char *line)
 		if (quote_char && *line == quote_char)
 			quote_char = '\0';
 		else if (!quote_char && (*line == '\'' || *line == '"'))
-			quote_char = *line;
+			count_q_word(&line, &quote_char, &wc, &in_word);
 		else if (!quote_char && (*line == '|' || *line == '<' || *line == '>'))
 			count_special_char(&line, &wc, &in_word);
 		else if (!quote_char && (*line == ' ' || *line == '	'))
@@ -90,6 +101,8 @@ t_cmd_table	*parseline(char *line, char **envp)
 
 	command = NULL;
 	command = split_command(line, command);
+	// for (int i = 0; command[i]; i++)
+	// 	printf("cmd:%s\n",command[i]);
 	if (command)
 	{
 		command = handle_env(command, envp);
