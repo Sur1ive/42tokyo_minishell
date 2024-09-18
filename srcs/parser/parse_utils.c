@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 03:54:38 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/08 17:41:07 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/19 00:00:30 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 char	*ft_strjoin_free(char const *s1, char const *s2);
 int		count_words(const char *line);
+int		is_redirection(char *token);
 
 static char	*extract_word(char **command, char *start, char *end)
 {
@@ -87,6 +88,39 @@ static char	**process_word(char **cmd, char **line, int *i, t_flags *flag)
 	return (cmd);
 }
 
+static char	**handle_special_char(char **cmd, char **line, int *i, t_flags *flag)
+{
+	if (flag->in_word && flag->start != *line)
+	{
+		cmd = process_word(cmd, line, i, flag);
+		if (!cmd)
+			return (NULL);
+	}
+	if ((**line == '<' && *(*line + 1) == '<') || (**line == '>' && *(*line + 1) == '>'))
+	{
+		cmd[*i] = ft_strndup(*line, 2);
+		if (!cmd[*i])
+		{
+			free2(cmd);
+			return (NULL);
+		}
+		*line += 1;
+	}
+	else
+	{
+		cmd[*i] = ft_strndup(*line, 1);
+		if (!cmd[*i])
+		{
+			free2(cmd);
+			return (NULL);
+		}
+	}
+	*i += 1;
+	flag->in_word = false;
+	flag->new_word_start = true;
+	return (cmd);
+}
+
 static char	**split_command_sub(char **cmd, char **line, int *i, t_flags *flag)
 {
 	while (**line != '\0')
@@ -99,6 +133,12 @@ static char	**split_command_sub(char **cmd, char **line, int *i, t_flags *flag)
 			if (!cmd)
 				errno = EINVAL;
 			*i += 1;
+		}
+		else if (**line == '|' || **line == '>' || **line == '<' )
+		{
+			cmd = handle_special_char(cmd, line, i, flag);
+			if (!cmd)
+				return (NULL);
 		}
 		else if (**line != ' ' && **line != '\t' && !(flag->in_word))
 		{
@@ -123,6 +163,7 @@ char	**split_command(char *line, char **command)
 	t_flags	flag;
 
 	wc = count_words(line);
+	printf("count:%d\n",wc);
 	command = malloc((wc + 1) * sizeof(char *));
 	if (!command)
 		return (NULL);

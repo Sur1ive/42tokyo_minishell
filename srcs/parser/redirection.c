@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 20:26:35 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/18 01:47:35 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/18 22:52:26 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +63,18 @@ int	count_arg(char **command)
 void	handle_redirection(t_cmd_table *current, char **cmd, int *i, int *index)
 {
 	current->cmd[*index] = NULL;
-	if (strcmp(cmd[*i], ">") == 0)
-		current->out = open(cmd[*i + 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else if (strcmp(cmd[*i], ">>") == 0)
-		current->out = open(cmd[*i + 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-	else if (strcmp(cmd[*i], "<") == 0)
-		current->in = open(cmd[*i + 1], O_RDONLY);
-	else if (strcmp(cmd[*i], "<<") == 0)
-		current->in = handle_heredoc(cmd[*i + 1]);
-	*i += 2;
+	if (cmd[*i + 1])
+	{
+		if (strcmp(cmd[*i], ">") == 0)
+			current->out = open(cmd[*i + 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (strcmp(cmd[*i], ">>") == 0)
+			current->out = open(cmd[*i + 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else if (strcmp(cmd[*i], "<") == 0)
+			current->in = open(cmd[*i + 1], O_RDONLY);
+		else if (strcmp(cmd[*i], "<<") == 0)
+			current->in = handle_heredoc(cmd[*i + 1]);
+		*i += 2;
+	}
 }
 
 void	handle_pipe(t_cmd_table **current, int *cmd_index, int *i)
