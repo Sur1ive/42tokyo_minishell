@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/17 22:41:50 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/18 15:35:23 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,10 @@ void	executor(t_cmd_table *cmd, char ***envpp)
 		}
 		else
 			wait(&g_exit_code);
+		if (cmd->in != 0)
+			close(cmd->in);
+		if (cmd->out != 1)
+			close(cmd->out);
 		cmd = cmd->next;
 	}
 	return ;
