@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:37 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/19 02:20:47 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/19 21:09:06 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,6 @@ t_cmd_table	*parseline(char *line, char **envp)
 
 	command = NULL;
 	command = split_command(line, command);
-	// for (int i = 0; command[i]; i++)
-	// 	printf("cmd:%s\n",command[i]);
 	if (command)
 	{
 		command = handle_env(command, envp);

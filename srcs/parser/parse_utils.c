@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 03:54:38 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/19 02:34:19 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/19 21:38:22 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ char	**split_command(char *line, char **command)
 	t_flags	flag;
 
 	wc = count_words(line);
-	printf("count:%d\n", wc);
 	command = malloc((wc + 1) * sizeof(char *));
 	if (!command)
 		return (NULL);
