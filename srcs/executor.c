@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/20 17:26:19 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/20 23:31:42 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 	int	result1;
 	int	result2;
 
+	result1 = 0;
+	result2 = 0;
 	if (cmd->in != 0)
 	{
 		result1 = dup2(cmd->in, STDIN_FILENO);
