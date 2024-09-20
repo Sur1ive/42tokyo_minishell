@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/18 15:35:23 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/20 15:57:01 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,30 +25,31 @@ void	freecmd(t_cmd_table *cmd)
 	}
 }
 
-void	printcmd(t_cmd_table *tab)
-{
-	int		i;
-	char	**cmd;
+// static void	printcmd(t_cmd_table *tab)
+// {
+// 	int		i;
+// 	char	**cmd;
 
-	cmd = tab->cmd;
-	if (!cmd)
-		return ;
-	i = 0;
-	printf("------------------test--------------------\n");
-	printf("cmd: ");
-	while (cmd[i])
-		printf("%s, ", cmd[i++]);
-	printf("\n");
-	printf("next: %p, in: %d, out: %d\n", tab->next, tab->in, tab->out);
-	printf("------------------------------------------\n");
-}
+// 	cmd = tab->cmd;
+// 	if (!cmd)
+// 		return ;
+// 	i = 0;
+// 	printf("------------------test--------------------\n");
+// 	printf("cmd: ");
+// 	while (cmd[i])
+// 		printf("%s, ", cmd[i++]);
+// 	printf("\n");
+// 	printf("next: %p, in: %d, out: %d\n", tab->next, tab->in, tab->out);
+// 	printf("------------------------------------------\n");
+// }
 
 void	executor(t_cmd_table *cmd, char ***envpp)
 {
 	pid_t	pid;
+	int		wstatus;
 	int		result;
 
-	if (cmd && cmd->next == NULL && cmd->cmd[0] && is_builtin(cmd->cmd[0]))
+	if (cmd->next == NULL && cmd->cmd[0] && is_builtin(cmd->cmd[0]))
 	{
 		result = exec_bulitin((cmd->cmd), envpp);
 		if (result < 0)
@@ -62,7 +63,6 @@ void	executor(t_cmd_table *cmd, char ***envpp)
 	}
 	while (cmd && cmd->cmd[0])
 	{
-		// printcmd(cmd);
 		pid = fork();
 		if (pid == -1)
 		{
@@ -90,7 +90,8 @@ void	executor(t_cmd_table *cmd, char ***envpp)
 			exit(EXIT_SUCCESS);
 		}
 		else
-			wait(&g_exit_code);
+			wait(&wstatus);
+		g_exit_code = WEXITSTATUS(wstatus);
 		if (cmd->in != 0)
 			close(cmd->in);
 		if (cmd->out != 1)
