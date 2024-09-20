@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/19 02:29:57 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/20 23:14:25 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,11 @@ int		init_envp(char ***envpp);
 // Inputを解析する(未完成)
 t_cmd_table	*parseline(char *line, char **envp);
 
-// 解析されたcommand lineを実行する。
+// 一つのcommand lineを実行する。
 // PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。
 int		exec(char **args, char ***envpp);
 
+// cmd tableのリストにあるすべてのコマンドを実行する
 void	executor(t_cmd_table *cmd, char ***envpp);
 void	freecmd(t_cmd_table *cmd);
 

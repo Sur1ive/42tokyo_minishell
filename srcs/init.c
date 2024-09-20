@@ -6,26 +6,44 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 21:38:38 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/17 22:20:14 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/20 14:56:29 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static char	**ft_strdup2(char **arr)
+{
+	char	**arr_cp;
+	int		i;
+
+	if (arr == NULL)
+		return (NULL);
+	arr_cp = (char **)malloc(sizeof(char *) * (ft_count(arr) + 1));
+	if (arr_cp == NULL)
+		return (NULL);
+	i = 0;
+	while (arr[i])
+	{
+		arr_cp[i] = ft_strdup(arr[i]);
+		if (arr_cp[i] == NULL)
+		{
+			free2(arr_cp);
+			return (NULL);
+		}
+		i++;
+	}
+	arr_cp[i] = NULL;
+	return (arr_cp);
+}
+
 int	init_envp(char ***envpp)
 {
-	int		flag;
-	char	workdir[PATH_MAX + 1];
-
-	*envpp = NULL;
-	ft_memset(workdir, 0, PATH_MAX + 1);
-	flag = 0;
-	flag += ft_setenv(envpp, "PWD", getcwd(workdir, PATH_MAX));
-	flag += ft_setenv(envpp, "PATH", getenv("PATH"));
-	if (flag < 0)
+	*envpp = ft_strdup2(__environ);
+	if (*envpp == NULL)
 	{
 		printf("minishell: %s\n", strerror(errno));
-		return (-1);
+		exit(GENERAL_ERR);
 	}
 	return (0);
 }
