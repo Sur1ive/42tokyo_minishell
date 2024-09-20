@@ -83,10 +83,11 @@ int		init_envp(char ***envpp);
 // Inputを解析する(未完成)
 t_cmd_table	*parseline(char *line, char **envp);
 
-// 解析されたcommand lineを実行する。
+// 一つのcommand lineを実行する。
 // PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。
 int		exec(char **args, char ***envpp);
 
+// cmd tableのリストにあるすべてのコマンドを実行する
 void	executor(t_cmd_table *cmd, char ***envpp);
 void	freecmd(t_cmd_table *cmd);
 

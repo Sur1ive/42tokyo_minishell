@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 13:42:46 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/17 22:29:31 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/20 17:08:00 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	str_is_valid(char *s)
 int	builtin_exit(char **args)
 {
 	if (args[1] == NULL)
-		;
+		return (-256);
 	else if (args[2])
 	{
 		printf("minishell: exit: too many arguments\n");
