@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/20 17:09:55 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/20 17:26:19 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 	if (exec(cmd->cmd, envpp) != 0)
 	{
 		if (errno)
-			printf("minishell: %s\n", strerror(errno));
+			printf("minishell: %s: %s\n", cmd->cmd[0], strerror(errno));
 		exit(GENERAL_ERR);
 	}
 	exit(EXIT_SUCCESS);
