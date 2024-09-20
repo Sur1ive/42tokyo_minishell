@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/20 17:14:09 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/19 02:29:57 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,9 @@ extern int	g_exit_code;
 typedef struct s_flags
 {
 	char	*start;
+	char	quote_char;
 	bool	in_word;
-	bool	new_word_start;
+	bool	in_quote;
 }	t_flags;
 
 typedef struct s_cmd_table

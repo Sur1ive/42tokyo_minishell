@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:37 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/18 01:51:59 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/19 21:09:06 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,26 @@ char	*ft_strjoin_free(char const *s1, char const *s2)
 	return (start);
 }
 
-int	count_words(const char *line)
+static void	count_special_char(char **line, int *wc, bool *in_word)
+{
+	(*wc)++;
+	if ((**line == '>' && *(*line + 1) == '>')
+		|| (**line == '<' && *(*line + 1) == '<'))
+		(*line)++;
+	*in_word = false;
+}
+
+static void	count_q_word(char **line, char *quote_char, int *wc, bool *in_word)
+{
+	*quote_char = **line;
+	if (!(*in_word))
+	{
+		(*wc)++;
+		*in_word = true;
+	}
+}
+
+int	count_words(char *line)
 {
 	int		wc;
 	bool	in_word;
@@ -60,7 +79,9 @@ int	count_words(const char *line)
 		if (quote_char && *line == quote_char)
 			quote_char = '\0';
 		else if (!quote_char && (*line == '\'' || *line == '"'))
-			quote_char = *line;
+			count_q_word(&line, &quote_char, &wc, &in_word);
+		else if (!quote_char && (*line == '|' || *line == '<' || *line == '>'))
+			count_special_char(&line, &wc, &in_word);
 		else if (!quote_char && (*line == ' ' || *line == '	'))
 			in_word = false;
 		else if (!in_word)
