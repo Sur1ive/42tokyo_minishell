@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 13:14:39 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/29 13:48:57 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 13:52:16 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ size_t	ft_strlcat(char *dest, const char *src, size_t size);
 t_list	*ft_lstnew(void *content);
 t_list	*ft_lstlast(t_list *lst);
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+
 int		ft_printf(const char *str, ...);
 int		ft_putchar(char c);
 int		ft_putstr(char *str);
@@ -83,6 +84,15 @@ int		ft_putp(void *p);
 int		ft_putnbr_base(int num, char *base);
 int		ft_putunbr_base(unsigned int nb, char *base);
 int		ft_putulnbr_base(unsigned long num, char *base);
+
+int		ft_dprintf(int fd, const char *str, ...);
+int		ft_fputchar(int fd, char c);
+int		ft_fputstr(int fd, char *str);
+int		ft_fputp(int fd, void *p);
+int		ft_fputnbr_base(int fd, int num, char *base);
+int		ft_fputunbr_base(int fd, unsigned int nb, char *base);
+int		ft_fputulnbr_base(int fd, unsigned long num, char *base);
+
 char	*get_next_line(int fd);
 
 #endif

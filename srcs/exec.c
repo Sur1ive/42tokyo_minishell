@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 18:36:14 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/20 17:17:22 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 13:57:23 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int	exec_extern(char **args, char **envp)
 	if (search_executable(args[0], filepath, ft_getenv(envp, "PATH")) == NULL)
 	{
 		errno = 0;
-		printf("%s: command not found\n", args[0]);
+		ft_dprintf(2, "%s: command not found\n", args[0]);
 		return (CMD_NOT_FOUND);
 	}
 	return (execve(filepath, args, envp));
@@ -72,7 +72,7 @@ int	exec(char **args, char ***envpp)
 		return (0);
 	if (ft_strcmp(args[0], ".") * ft_strcmp(args[0], "..") == 0)
 	{
-		printf("%s: command not found\n", args[0]);
+		ft_dprintf(2, "%s: command not found\n", args[0]);
 		return (CMD_NOT_FOUND);
 	}
 	if (ft_strchr(args[0], '/') != NULL)
@@ -80,7 +80,7 @@ int	exec(char **args, char ***envpp)
 		stat(args[0], &st);
 		if (S_ISDIR(st.st_mode))
 		{
-			printf("minishell: %s: Is a directory\n", args[0]);
+			ft_dprintf(2, "minishell: %s: Is a directory\n", args[0]);
 			return (CANNOT_EXEC);
 		}
 		result = execve(args[0], args, *envpp);

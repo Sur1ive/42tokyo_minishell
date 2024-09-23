@@ -1,27 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_fputp.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/31 14:52:12 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 13:57:23 by yxu              ###   ########.fr       */
+/*   Created: 2023/10/04 12:53:04 by yxu               #+#    #+#             */
+/*   Updated: 2024/09/23 13:43:56 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	pwd(void)
+int	ft_fputp(int fd, void *p)
 {
-	char	workdir[PATH_MAX + 1];
-
-	ft_memset(workdir, 0, PATH_MAX + 1);
-	if (getcwd(workdir, PATH_MAX) == NULL)
-	{
-		ft_dprintf(2, "minishell: pwd: %s\n", strerror(errno));
-		return (1);
-	}
-	printf("%s\n", workdir);
-	return (0);
+	write(fd, "0x", 2);
+	if (((unsigned long)p) / 16 == 0)
+		return (2 + ft_fputulnbr_base(fd, ((unsigned long)p) % 16,
+				"0123456789abcdef"));
+	return (2
+		+ ft_fputulnbr_base(fd, ((unsigned long)p) / 16, "0123456789abcdef")
+		+ ft_fputnbr_base(fd, ((unsigned long)p) % 16, "0123456789abcdef"));
 }

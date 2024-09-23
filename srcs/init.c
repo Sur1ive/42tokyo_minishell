@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 21:38:38 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/20 14:56:29 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 13:57:23 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	init_envp(char ***envpp)
 	*envpp = ft_strdup2(__environ);
 	if (*envpp == NULL)
 	{
-		printf("minishell: %s\n", strerror(errno));
+		ft_dprintf(2, "minishell: %s\n", strerror(errno));
 		exit(GENERAL_ERR);
 	}
 	return (0);
@@ -70,7 +70,7 @@ void	set_signal(void)
 	sa.sa_handler = deal_signal;
 	sa.sa_flags = 0;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
-		printf("minishell: %s\n", strerror(errno));
+		ft_dprintf(2, "minishell: %s\n", strerror(errno));
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
-		printf("minishell: %s\n", strerror(errno));
+		ft_dprintf(2, "minishell: %s\n", strerror(errno));
 }
