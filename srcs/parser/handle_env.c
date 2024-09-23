@@ -36,7 +36,7 @@ static char	*process_variable(char **line, char **envp)
 	if (**line == '?')
 	{
 		(*line)++;
-		return (ft_strdup(ft_itoa(g_exit_code)));
+		return (ft_itoa(g_exit_code));
 	}
 	var_name = extract_var_name(line);
 	if (var_name)
