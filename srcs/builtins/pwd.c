@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 14:52:12 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 13:57:23 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 14:09:53 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	pwd(void)
 	if (getcwd(workdir, PATH_MAX) == NULL)
 	{
 		ft_dprintf(2, "minishell: pwd: %s\n", strerror(errno));
+		errno = 0;
 		return (1);
 	}
 	printf("%s\n", workdir);

@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 14:52:04 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 13:57:23 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 14:08:02 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static int	setpwdenv(char ***envpp)
 	if (getcwd(workdir, PATH_MAX) == NULL)
 	{
 		ft_dprintf(2, "minishell: cd: %s\n", strerror(errno));
+		errno = 0;
 		return (-1);
 	}
 	if (ft_getenv_item(*envpp, "PWD") == NULL)
@@ -27,6 +28,7 @@ static int	setpwdenv(char ***envpp)
 	if (ft_setenv(envpp, "PWD", workdir) == -1)
 	{
 		ft_dprintf(2, "minishell: cd: %s\n", strerror(errno));
+		errno = 0;
 		return (-1);
 	}
 	return (0);
@@ -48,11 +50,13 @@ int	cd(char **args, char ***envpp)
 	if (chdir(dir) == -1)
 	{
 		ft_dprintf(2, "minishell: cd: %s: %s\n", dir, strerror(errno));
+		errno = 0;
 		return (1);
 	}
 	if (setpwdenv(envpp) == -1)
 	{
 		ft_dprintf(2, "minishell: cd: %s: %s\n", dir, strerror(errno));
+		errno = 0;
 		return (1);
 	}
 	return (0);

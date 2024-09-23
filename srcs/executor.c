@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 13:57:23 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 14:14:43 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ static int	replace_io(int in, int out)
 	if (result1 == -1 || result2 == -1)
 	{
 		ft_dprintf(2, "minishell: %s\n", strerror(errno));
+		errno = 0;
 		return (-1);
 	}
 	return (0);
@@ -101,6 +102,7 @@ static void	executor_fork(t_cmd_table *cmd, char ***envpp)
 		if (pid == -1)
 		{
 			ft_dprintf(2, "minishell: %s\n", strerror(errno));
+			errno = 0;
 			g_exit_code = 1;
 		}
 		if (pid == 0)

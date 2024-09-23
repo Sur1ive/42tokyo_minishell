@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 18:36:14 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 13:57:23 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 14:11:25 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ static int	exec_extern(char **args, char **envp)
 
 	if (search_executable(args[0], filepath, ft_getenv(envp, "PATH")) == NULL)
 	{
-		errno = 0;
 		ft_dprintf(2, "%s: command not found\n", args[0]);
+		errno = 0;
 		return (CMD_NOT_FOUND);
 	}
 	return (execve(filepath, args, envp));

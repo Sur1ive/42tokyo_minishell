@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 21:38:38 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 13:57:23 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 14:16:20 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,13 @@ void	set_signal(void)
 	sa.sa_handler = deal_signal;
 	sa.sa_flags = 0;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
+	{
 		ft_dprintf(2, "minishell: %s\n", strerror(errno));
+		errno = 0;
+	}
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
+	{
 		ft_dprintf(2, "minishell: %s\n", strerror(errno));
+		errno = 0;
+	}
 }
