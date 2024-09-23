@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:37 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/19 21:09:06 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/23 15:05:48 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,11 @@ int	count_words(char *line)
 		line++;
 	}
 	return (wc);
+}
+
+void	syntax_error(t_cmd_table *cmd)
+{
+
 }
 
 t_cmd_table	*parseline(char *line, char **envp)

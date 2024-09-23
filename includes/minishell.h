@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/20 23:28:55 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/23 15:45:07 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ typedef struct s_flags
 
 typedef struct s_cmd_table
 {
+	struct s_cmd_table	*prev;
 	struct s_cmd_table	*next;
 	char				**cmd;
 	int					in;

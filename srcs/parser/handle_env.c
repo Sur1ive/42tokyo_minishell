@@ -36,7 +36,7 @@ static char	*process_variable(char **line, char **envp)
 	if (**line == '?')
 	{
 		(*line)++;
-		return (ft_strdup(ft_itoa(g_exit_code)));
+		return (ft_itoa(g_exit_code));
 	}
 	var_name = extract_var_name(line);
 	if (var_name)
@@ -85,6 +85,8 @@ static char	*handle_token(char *cmd, char **envp, bool	flag)
 	char	*tmp;
 
 	result = ft_strdup("");
+	if (!result)
+		return (NULL);
 	while (*cmd)
 	{
 		if (flag && (*cmd == '"' || *cmd == '\''))
@@ -97,7 +99,10 @@ static char	*handle_token(char *cmd, char **envp, bool	flag)
 			cmd++;
 		}
 		if (!tmp)
+		{
+			free(result);
 			return (NULL);
+		}
 		result = ft_strjoin_free(result, tmp);
 	}
 	return (result);

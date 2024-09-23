@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/16 21:18:01 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/23 15:45:59 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ t_cmd_table	*create_cmd_table_entry(void)
 	entry->in = 0;
 	entry->out = 1;
 	entry->next = NULL;
+	entry->prev = NULL;
 	return (entry);
 }
 
