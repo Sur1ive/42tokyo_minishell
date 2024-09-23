@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 14:14:43 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 14:25:40 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,16 @@ static void	executor_fork(t_cmd_table *cmd, char ***envpp)
 
 void	executor(t_cmd_table *cmd, char ***envpp)
 {
+	if (!cmd)
+	{
+		if (errno)
+		{
+			ft_dprintf(2, "minishell: %s\n", strerror(errno));
+			errno = 0;
+			g_exit_code = 1;
+		}
+		return ;
+	}
 	if (cmd->next == NULL && cmd->cmd[0] && is_builtin(cmd->cmd[0]))
 		executor_nofork(cmd, envpp);
 	else
