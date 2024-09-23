@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 03:54:38 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/19 21:38:22 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/23 20:19:45 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static void	start_quote(char **line, t_flags *flag)
 {
 	flag->in_quote = true;
 	flag->quote_char = **line;
-	if (*(*line - 1) == ' ' || *(*line - 1) == '\t')
+	if (*(*line - 1) == ' ' || *(*line - 1) == '\t' || *(*line - 1) == '|' || *(*line - 1) == '<' || *(*line - 1) == '>')
 	{
 		flag->start = *line;
 		flag->in_word = true;

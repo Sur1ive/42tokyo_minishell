@@ -114,6 +114,8 @@ char	**handle_env(char **cmd, char **envp)
 	char	*s_ptr;
 
 	i = 0;
+	if (!cmd)
+		return (NULL);
 	while (cmd[i])
 	{
 		s_ptr = cmd[i];

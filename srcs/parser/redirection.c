@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 20:26:35 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/23 16:09:49 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/23 20:48:01 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ int	handle_heredoc(char *delimiter)
 	ft_printf("heredoc> ");
 	while (ft_getline(&line, &len) != -1)
 	{
+		printf("del:%s\n",delimiter);
+		printf("line:%s\n", line);
+		printf("strcmp:%d\n",ft_strcmp(line, delimiter));
 		if (ft_strcmp(line, delimiter) == 0)
 			break ;
 		write(pipefd[1], line, ft_strlen(line));
@@ -60,7 +63,7 @@ int	count_arg(char **command)
 	return (count);
 }
 
-void	handle_redirection(t_cmd_table *current, char **cmd, int *i, int *index)
+int	handle_redirection(t_cmd_table *current, char **cmd, int *i, int *index)
 {
 	current->cmd[*index] = NULL;
 	if (cmd[*i + 1])
@@ -75,8 +78,25 @@ void	handle_redirection(t_cmd_table *current, char **cmd, int *i, int *index)
 			current->in = open(cmd[*i + 1], O_RDONLY);
 		else if (ft_strcmp(cmd[*i], "<<") == 0)
 			current->in = handle_heredoc(cmd[*i + 1]);
+		if (current->out == -1 || current->in == -1)
+		{
+			ft_dprintf(2, "%s\n", strerror(errno));
+			errno = 0;
+			g_exit_code = 1;
+			return (-1);
+		}
+		struct stat fileStat;
+		fstat(current->in, &fileStat);
+		if ((long long)fileStat.st_size > 65536)
+		{
+			ft_dprintf(2, "%s\n", strerror(errno));
+			errno = 0;
+			g_exit_code = 1;
+			return (-1);
+		}
 		*i += 2;
 	}
+	return (0);
 }
 
 int	handle_pipe(t_cmd_table **current, int *cmd_index, int *i)
@@ -114,6 +134,7 @@ t_cmd_table	*parse_command_with_redirection(char **cmd)
 	current = table;
 	i = 0;
 	cmd_index = 0;
+	
 	while (cmd[i])
 	{
 		if (current->cmd == NULL)
@@ -122,14 +143,32 @@ t_cmd_table	*parse_command_with_redirection(char **cmd)
 			if (current->cmd == NULL)
 			{
 				current->prev->next = NULL;
-				if (current->in != 0)
+				if (current->in > 0)
 					close(current->in);
+				if (current == table)
+				{
+					freecmd(current);
+					return (NULL);
+				}
 				freecmd(current);
+				return (table);
 			}
-			return (table);
 		}
 		if (is_redirection(cmd[i]))
-			handle_redirection(current, cmd, &i, &cmd_index);
+		{
+			if (handle_redirection(current, cmd, &i, &cmd_index) == -1)
+			{
+				if (current->in > 0)
+					close(current->in);
+				if (current == table)
+				{
+					freecmd(current);
+					return (NULL);
+				}
+				freecmd(current);
+				return (table);
+			}
+		}
 		else if (ft_strcmp(cmd[i], "|") == 0)
 		{
 			if (handle_pipe(&current, &cmd_index, &i) == -1)
@@ -141,8 +180,13 @@ t_cmd_table	*parse_command_with_redirection(char **cmd)
 			if (!current->cmd[cmd_index - 1])
 			{
 				current->prev->next = NULL;
-				if (current->in != 0)
+				if (current->in > 0)
 					close(current->in);
+				if (current == table)
+				{
+					freecmd(current);
+					return (NULL);
+				}
 				freecmd(current);
 				return (table);
 			}

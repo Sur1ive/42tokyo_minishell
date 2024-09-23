@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/23 15:45:59 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/23 18:31:26 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ ssize_t	ft_getline(char **lineptr, size_t *n)
 			*lineptr = ft_realloc(*lineptr, *n);
 			buffer = *lineptr;
 		}
-		if (buffer[total_len++] == '\n')
+		if (buffer[total_len] == '\n')
 			break ;
 	}
 	buffer[total_len] = '\0';

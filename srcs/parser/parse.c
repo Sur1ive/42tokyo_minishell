@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:37 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 15:05:48 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/23 20:28:54 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ char		**split_command(char *line, char **command);
 char		**handle_env(char **cmd, char **envp);
 t_cmd_table	*parse_command_with_redirection(char **command);
 t_cmd_table	*parse_command_with_redirection(char **command);
+int	is_redirection(char *token);
 
 char	*ft_strjoin_free(char const *s1, char const *s2)
 {
@@ -94,9 +95,32 @@ int	count_words(char *line)
 	return (wc);
 }
 
-void	syntax_error(t_cmd_table *cmd)
+int	syntax_error(char **cmd)
 {
-
+	int	i;
+	if (!cmd)
+		return (0);
+	i = 0;
+	while (cmd[i] != NULL)
+	{
+		if (is_redirection(cmd[i]))
+		{
+			if (!cmd[i + 1])
+			{
+				ft_dprintf(2, "syntax error near unexpected token `newline'\n");
+				g_exit_code = MISUSE_OF_BUILTINS;
+				return (0);
+			}
+			else if (is_redirection(cmd[i + 1]) || ft_strcmp(cmd[i + 1], "|") == 0)
+			{
+				ft_dprintf(2, "syntax error near unexpected token `%s'\n", cmd[i + 1]);
+				g_exit_code = MISUSE_OF_BUILTINS;
+				return (0);
+			}
+		}
+		i++;
+	}
+	return (1);
 }
 
 t_cmd_table	*parseline(char *line, char **envp)
@@ -106,13 +130,17 @@ t_cmd_table	*parseline(char *line, char **envp)
 
 	command = NULL;
 	command = split_command(line, command);
-	if (command)
-	{
-		command = handle_env(command, envp);
-		cmd_table = parse_command_with_redirection(command);
-	}
+	// for (int i = 0; command[i]; i++)
+	// 	printf("cmd:%s\n",command[i]);
+	command = handle_env(command, envp);
 	if (!command)
 		return (NULL);
+	if (!syntax_error(command))
+	{
+		free2(command);
+		return (NULL);
+	}
+	cmd_table = parse_command_with_redirection(command);
 	free2(command);
 	return (cmd_table);
 }
