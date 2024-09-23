@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:07:41 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 19:05:19 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 19:35:37 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,19 @@ static char	**split_env_item(char *arg)
 
 static int	is_valid_env(char *arg)
 {
+	int	i;
+
 	if (ft_strlen(arg) == 0)
 		return (0);
 	if (!ft_isalpha(arg[0]) && arg[0] != '_')
 		return (0);
+	i = 1;
+	while (arg[i] && arg[i] != '=')
+	{
+		if (!ft_isalnum(arg[i]) && arg[i] != '_')
+			return (0);
+		i++;
+	}
 	return (1);
 }
 
