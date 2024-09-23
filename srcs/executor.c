@@ -3,27 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/20 17:26:19 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 00:39:58 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	freecmd(t_cmd_table *cmd)
-{
-	t_cmd_table	*next;
-
-	while (cmd)
-	{
-		next = cmd->next;
-		free2(cmd->cmd);
-		free(cmd);
-		cmd = next;
-	}
-}
 
 // static void	printcmd(t_cmd_table *tab)
 // {
@@ -43,11 +30,44 @@ void	freecmd(t_cmd_table *cmd)
 // 	printf("------------------------------------------\n");
 // }
 
+static int	replace_io(int in, int out)
+{
+	int	result1;
+	int	result2;
+
+	result1 = 0;
+	result2 = 0;
+	if (in != 0)
+	{
+		result1 = dup2(in, STDIN_FILENO);
+		close(in);
+	}
+	if (out != 1)
+	{
+		result2 = dup2(out, STDOUT_FILENO);
+		close(out);
+	}
+	if (result1 == -1 || result2 == -1)
+	{
+		printf("minishell: %s\n", strerror(errno));
+		return (-1);
+	}
+	return (0);
+}
+
 static void	executor_nofork(t_cmd_table *cmd, char ***envpp)
 {
-	int		result;
+	int	result;
+	int	in_cp;
+	int	out_cp;
 
-	result = exec_bulitin((cmd->cmd), envpp);
+	in_cp = dup(STDIN_FILENO);
+	out_cp = dup(STDOUT_FILENO);
+	if (in_cp == -1 || out_cp == -1 || replace_io(cmd->in, cmd->out) == -1)
+		return ;
+	result = exec_bulitin(cmd->cmd, envpp);
+	if (replace_io(in_cp, out_cp) == -1)
+		result = GENERAL_ERR * -1;
 	if (result < 0)
 	{
 		freecmd(cmd);
@@ -59,24 +79,8 @@ static void	executor_nofork(t_cmd_table *cmd, char ***envpp)
 
 static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 {
-	int	result1;
-	int	result2;
-
-	if (cmd->in != 0)
-	{
-		result1 = dup2(cmd->in, STDIN_FILENO);
-		close(cmd->in);
-	}
-	if (cmd->out != 1)
-	{
-		result2 = dup2(cmd->out, STDOUT_FILENO);
-		close(cmd->out);
-	}
-	if (result1 == -1 || result2 == -1)
-	{
-		printf("minishell: %s\n", strerror(errno));
+	if (replace_io(cmd->in, cmd->out) == -1)
 		exit(GENERAL_ERR);
-	}
 	if (exec(cmd->cmd, envpp) != 0)
 	{
 		if (errno)
