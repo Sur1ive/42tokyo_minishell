@@ -8,7 +8,9 @@ SRCS	= ft_isdigit.c ft_memset.c ft_striteri.c ft_strrchr.c\
 		ft_isalnum.c ft_memcmp.c ft_split.c ft_strmapi.c\
 		ft_isalpha.c ft_memcpy.c ft_strchr.c ft_strncmp.c\
 		ft_isascii.c  ft_memmove.c ft_strdup.c ft_strnstr.c\
-		ft_printf.c ft_putstr.c ft_putnbr.c ft_putp.c get_next_line_safe.c\
+		printf/ft_printf.c printf/ft_putstr.c printf/ft_putnbr.c printf/ft_putp.c\
+		printf/ft_dprintf.c printf/ft_fputstr.c printf/ft_fputnbr.c printf/ft_fputp.c\
+		get_next_line_safe.c\
 		ft_lstlast.c ft_lstmap.c ft_lstnew.c ft_strcmp.c\
 		ft_lstadd_back.c ft_lstsize.c ft_lstadd_front.c\
 		ft_lstclear.c ft_lstdelone.c ft_lstiter.c

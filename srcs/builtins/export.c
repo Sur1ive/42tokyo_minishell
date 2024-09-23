@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:07:41 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/17 21:21:52 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 14:09:31 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,14 @@ int	export(char **args, char ***envpp)
 		{
 			splited = split_env_item(args[i]);
 			if (splited == NULL || ft_setenv(envpp, splited[0], splited[1]))
-				printf("minishell: export: %s\n", strerror(errno));
+				ft_dprintf(2, "minishell: export: %s\n", strerror(errno));
+			errno = 0;
 			free2(splited);
 		}
 		else
 		{
-			printf("minishell: export: %s: not a valid identifier\n", args[i]);
+			ft_dprintf
+				(2, "minishell: export: %s: not a valid identifier\n", args[i]);
 			fail_flag = 1;
 		}
 		i++;

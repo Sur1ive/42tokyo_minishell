@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 14:52:04 by yxu               #+#    #+#             */
-/*   Updated: 2024/08/02 14:13:48 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 14:08:02 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,16 @@ static int	setpwdenv(char ***envpp)
 	ft_memset(workdir, 0, PATH_MAX + 1);
 	if (getcwd(workdir, PATH_MAX) == NULL)
 	{
-		printf("minishell: cd: %s\n", strerror(errno));
+		ft_dprintf(2, "minishell: cd: %s\n", strerror(errno));
+		errno = 0;
 		return (-1);
 	}
 	if (ft_getenv_item(*envpp, "PWD") == NULL)
 		return (0);
 	if (ft_setenv(envpp, "PWD", workdir) == -1)
 	{
-		printf("minishell: cd: %s\n", strerror(errno));
+		ft_dprintf(2, "minishell: cd: %s\n", strerror(errno));
+		errno = 0;
 		return (-1);
 	}
 	return (0);
@@ -40,19 +42,21 @@ int	cd(char **args, char ***envpp)
 		dir = ".";
 	else if (args[2])
 	{
-		printf("minishell: cd: too many arguments\n");
+		ft_dprintf(2, "minishell: cd: too many arguments\n");
 		return (1);
 	}
 	else
 		dir = args[1];
 	if (chdir(dir) == -1)
 	{
-		printf("minishell: cd: %s: %s\n", dir, strerror(errno));
+		ft_dprintf(2, "minishell: cd: %s: %s\n", dir, strerror(errno));
+		errno = 0;
 		return (1);
 	}
 	if (setpwdenv(envpp) == -1)
 	{
-		printf("minishell: cd: %s: %s\n", dir, strerror(errno));
+		ft_dprintf(2, "minishell: cd: %s: %s\n", dir, strerror(errno));
+		errno = 0;
 		return (1);
 	}
 	return (0);
