@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 14:52:04 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 14:08:02 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 19:14:36 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int	cd(char **args, char ***envpp)
 	}
 	else
 		dir = args[1];
+	if (ft_strlen(dir) == 0)
+		return (0);
 	if (chdir(dir) == -1)
 	{
 		ft_dprintf(2, "minishell: cd: %s: %s\n", dir, strerror(errno));
@@ -54,10 +56,6 @@ int	cd(char **args, char ***envpp)
 		return (1);
 	}
 	if (setpwdenv(envpp) == -1)
-	{
-		ft_dprintf(2, "minishell: cd: %s: %s\n", dir, strerror(errno));
-		errno = 0;
 		return (1);
-	}
 	return (0);
 }
