@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:07:41 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 14:09:31 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/23 19:35:37 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,34 +15,56 @@
 static char	**split_env_item(char *arg)
 {
 	char	**splited;
-	int		equal_index;
+	int		equal_i;
 
-	equal_index = ft_strchr(arg, '=') - arg;
+	if (ft_strchr(arg, '=') != NULL)
+		equal_i = ft_strchr(arg, '=') - arg;
+	else
+		equal_i = ft_strlen(arg);
 	splited = (char **)malloc(sizeof(char *) * 3);
 	if (!splited)
 		return (NULL);
+	splited[0] = (char *)malloc(sizeof(char) * (equal_i + 1));
+	splited[1] = (char *)
+		malloc(sizeof(char) * ((ft_strlen(arg) - equal_i) || 1));
 	splited[2] = NULL;
-	splited[0] = (char *)malloc(sizeof(char) * (equal_index + 1));
-	splited[1] = (char *)malloc(sizeof(char) * (ft_strlen(arg) - equal_index));
 	if (!splited[0] || !splited[1])
 	{
 		free2(splited);
 		return (NULL);
 	}
-	ft_strlcpy(splited[0], arg, equal_index + 1);
-	ft_strlcpy(splited[1], arg + equal_index + 1, ft_strlen(arg) - equal_index);
+	ft_strlcpy(splited[0], arg, equal_i + 1);
+	if ((size_t)equal_i != ft_strlen(arg))
+		ft_strlcpy(splited[1], arg + equal_i + 1, ft_strlen(arg) - equal_i);
+	else
+		splited[1][0] = '\0';
 	return (splited);
 }
 
 static int	is_valid_env(char *arg)
 {
-	if (ft_strlen(arg) < 2)
+	int	i;
+
+	if (ft_strlen(arg) == 0)
 		return (0);
 	if (!ft_isalpha(arg[0]) && arg[0] != '_')
 		return (0);
-	if (ft_strchr(arg, '=') == NULL)
-		return (0);
+	i = 1;
+	while (arg[i] && arg[i] != '=')
+	{
+		if (!ft_isalnum(arg[i]) && arg[i] != '_')
+			return (0);
+		i++;
+	}
 	return (1);
+}
+
+static void	print_env_error(char *arg)
+{
+	if (ft_strlen(arg) == 0)
+		ft_dprintf(2, "minishell: export: `': not a valid identifier\n");
+	else
+		ft_dprintf(2, "minishell: export: %s: not a valid identifier\n", arg);
 }
 
 int	export(char **args, char ***envpp)
@@ -65,8 +87,7 @@ int	export(char **args, char ***envpp)
 		}
 		else
 		{
-			ft_dprintf
-				(2, "minishell: export: %s: not a valid identifier\n", args[i]);
+			print_env_error(args[i]);
 			fail_flag = 1;
 		}
 		i++;
