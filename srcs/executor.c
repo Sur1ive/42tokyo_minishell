@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 14:25:40 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/24 14:29:37 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,40 +80,48 @@ static void	executor_nofork(t_cmd_table *cmd, char ***envpp)
 
 static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 {
-	if (replace_io(cmd->in, cmd->out) == -1)
-		exit(GENERAL_ERR);
-	if (exec(cmd->cmd, envpp) != 0)
+	if (cmd->pid == -1)
 	{
-		if (errno)
-			ft_dprintf(2, "minishell: %s: %s\n", cmd->cmd[0], strerror(errno));
-		exit(GENERAL_ERR);
+		ft_dprintf(2, "minishell: %s\n", strerror(errno));
+		errno = 0;
+		g_exit_code = 1;
 	}
-	exit(EXIT_SUCCESS);
+	else if (cmd->pid == 0)
+	{
+		if (replace_io(cmd->in, cmd->out) == -1)
+			exit(GENERAL_ERR);
+		if (exec(cmd->cmd, envpp) != 0)
+		{
+			if (errno)
+				ft_dprintf(2, "minishell: %s: %s\n",
+					cmd->cmd[0], strerror(errno));
+			exit(GENERAL_ERR);
+		}
+		exit(EXIT_SUCCESS);
+	}
 }
 
 static void	executor_fork(t_cmd_table *cmd, char ***envpp)
 {
-	pid_t	pid;
-	int		wstatus;
+	t_cmd_table	*cmd_start;
+	int			wstatus;
 
+	cmd_start = cmd;
 	while (cmd && cmd->cmd[0])
 	{
-		pid = fork();
-		if (pid == -1)
-		{
-			ft_dprintf(2, "minishell: %s\n", strerror(errno));
-			errno = 0;
-			g_exit_code = 1;
-		}
-		if (pid == 0)
-			executor_child_process(cmd, envpp);
-		else
-			wait(&wstatus);
-		g_exit_code = WEXITSTATUS(wstatus);
+		cmd->pid = fork();
+		executor_child_process(cmd, envpp);
 		if (cmd->in != 0)
 			close(cmd->in);
 		if (cmd->out != 1)
 			close(cmd->out);
+		cmd = cmd->next;
+	}
+	cmd = cmd_start;
+	while (cmd && cmd->cmd[0])
+	{
+		waitpid(cmd->pid, &wstatus, 0);
+		g_exit_code = WEXITSTATUS(wstatus);
 		cmd = cmd->next;
 	}
 }

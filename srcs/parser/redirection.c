@@ -6,17 +6,12 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 20:26:35 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/23 20:48:01 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/26 11:48:45 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-t_cmd_table	*create_cmd_table_entry(void);
-void		free_cmd_table(t_cmd_table *table);
-int			is_redirection(char *token);
-void		*ft_realloc(void *ptr, size_t new_size);
-ssize_t		ft_getline(char **lineptr, size_t *n);
+#include "parse.h"
 
 int	handle_heredoc(char *delimiter)
 {
@@ -34,9 +29,6 @@ int	handle_heredoc(char *delimiter)
 	ft_printf("heredoc> ");
 	while (ft_getline(&line, &len) != -1)
 	{
-		printf("del:%s\n",delimiter);
-		printf("line:%s\n", line);
-		printf("strcmp:%d\n",ft_strcmp(line, delimiter));
 		if (ft_strcmp(line, delimiter) == 0)
 			break ;
 		write(pipefd[1], line, ft_strlen(line));
@@ -54,30 +46,34 @@ int	count_arg(char **command)
 
 	count = 0;
 	i = 0;
-	while (command[i] && !is_redirection(command[i])
-		&& ft_strcmp(command[i], "|") != 0)
+	while (command[i] && ft_strcmp(command[i], "|") != 0)
 	{
-		count++;
+		if (command[i + 1] && is_redirection(command[i]))
+			i++;
+		else
+			count++;
 		i++;
 	}
 	return (count);
 }
 
-int	handle_redirection(t_cmd_table *current, char **cmd, int *i, int *index)
+int	handle_redirection(t_cmd_table *current, t_parsed_cmd *p_current)
 {
-	current->cmd[*index] = NULL;
-	if (cmd[*i + 1])
+	t_redirection	*tmp;
+
+	tmp = p_current->redir;
+	while (tmp)
 	{
-		if (ft_strcmp(cmd[*i], ">") == 0)
-			current->out = open(cmd[*i + 1],
+		if (ft_strcmp(tmp->op, ">") == 0)
+			current->out = open(tmp->fd_name,
 					O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else if (ft_strcmp(cmd[*i], ">>") == 0)
-			current->out = open(cmd[*i + 1],
+		else if (ft_strcmp(tmp->op, ">>") == 0)
+			current->out = open(tmp->fd_name,
 					O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else if (ft_strcmp(cmd[*i], "<") == 0)
-			current->in = open(cmd[*i + 1], O_RDONLY);
-		else if (ft_strcmp(cmd[*i], "<<") == 0)
-			current->in = handle_heredoc(cmd[*i + 1]);
+		else if (ft_strcmp(tmp->op, "<") == 0)
+			current->in = open(tmp->fd_name, O_RDONLY);
+		else if (ft_strcmp(tmp->op, "<<") == 0)
+			current->in = handle_heredoc(tmp->fd_name);
 		if (current->out == -1 || current->in == -1)
 		{
 			ft_dprintf(2, "%s\n", strerror(errno));
@@ -85,21 +81,12 @@ int	handle_redirection(t_cmd_table *current, char **cmd, int *i, int *index)
 			g_exit_code = 1;
 			return (-1);
 		}
-		struct stat fileStat;
-		fstat(current->in, &fileStat);
-		if ((long long)fileStat.st_size > 65536)
-		{
-			ft_dprintf(2, "%s\n", strerror(errno));
-			errno = 0;
-			g_exit_code = 1;
-			return (-1);
-		}
-		*i += 2;
+		tmp = tmp->next;
 	}
 	return (0);
 }
 
-int	handle_pipe(t_cmd_table **current, int *cmd_index, int *i)
+int	handle_pipe(t_cmd_table **current, t_parsed_cmd *p_current)
 {
 	int	pipefd[2];
 
@@ -108,93 +95,35 @@ int	handle_pipe(t_cmd_table **current, int *cmd_index, int *i)
 		perror("pipe");
 		return (-1);
 	}
-	(*current)->cmd[*cmd_index] = NULL;
 	(*current)->out = pipefd[1];
-	(*current)->next = create_cmd_table_entry();
-	if ((*current)->next == 0)
+	(*current)->next = create_cmd_table_entry(p_current->next);
+	if ((*current)->next == NULL)
 		return (-1);
-	(*current)->prev = *current;
+	(*current)->next->prev = *current;
 	*current = (*current)->next;
 	(*current)->in = pipefd[0];
-	*cmd_index = 0;
-	*i += 1;
 	return (0);
 }
 
-t_cmd_table	*parse_command_with_redirection(char **cmd)
+t_cmd_table	*exec_preparator(t_parsed_cmd *cmds)
 {
-	t_cmd_table	*table;
-	t_cmd_table	*current;
-	int			i;
-	int			cmd_index;
+	t_cmd_table		*head;
+	t_cmd_table		*current;
+	t_parsed_cmd	*p_current;
 
-	table = create_cmd_table_entry();
-	if (!table)
+	p_current = cmds;
+	head = NULL;
+	current = create_cmd_table_entry(p_current);
+	if (!current)
 		return (NULL);
-	current = table;
-	i = 0;
-	cmd_index = 0;
-	
-	while (cmd[i])
+	head = current;
+	while (p_current)
 	{
-		if (current->cmd == NULL)
-		{
-			current->cmd = malloc(sizeof(char *) * (count_arg(&cmd[i]) + 1));
-			if (current->cmd == NULL)
-			{
-				current->prev->next = NULL;
-				if (current->in > 0)
-					close(current->in);
-				if (current == table)
-				{
-					freecmd(current);
-					return (NULL);
-				}
-				freecmd(current);
-				return (table);
-			}
-		}
-		if (is_redirection(cmd[i]))
-		{
-			if (handle_redirection(current, cmd, &i, &cmd_index) == -1)
-			{
-				if (current->in > 0)
-					close(current->in);
-				if (current == table)
-				{
-					freecmd(current);
-					return (NULL);
-				}
-				freecmd(current);
-				return (table);
-			}
-		}
-		else if (ft_strcmp(cmd[i], "|") == 0)
-		{
-			if (handle_pipe(&current, &cmd_index, &i) == -1)
-				return (table);
-		}
-		else
-		{
-			current->cmd[cmd_index++] = ft_strdup(cmd[i++]);
-			if (!current->cmd[cmd_index - 1])
-			{
-				current->prev->next = NULL;
-				if (current->in > 0)
-					close(current->in);
-				if (current == table)
-				{
-					freecmd(current);
-					return (NULL);
-				}
-				freecmd(current);
-				return (table);
-			}
-		}
+		if (p_current->redir)
+			handle_redirection(current, p_current);
+		if (p_current->next)
+			handle_pipe(&current, p_current);
+		p_current = p_current->next;
 	}
-	if (i != 0)
-		current->cmd[cmd_index] = NULL;
-	else
-		current->cmd = ft_calloc(1, 1);
-	return (table);
+	return (head);
 }

@@ -11,9 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char		*ft_strjoin_free(char const *s1, char const *s2);
-static char	*handle_token(char *cmd, char **envp, bool flag);
+#include "parse.h"
 
 static char	*extract_var_name(char **line)
 {
@@ -42,13 +40,12 @@ static char	*process_variable(char **line, char **envp)
 	if (var_name)
 	{
 		var_value = ft_getenv(envp, var_name);
+		free(var_name);
 		if (var_value)
 		{
-			free(var_name);
 			var_value = ft_strdup(var_value);
 			return (var_value);
 		}
-		free(var_name);
 	}
 	return (ft_strdup(""));
 }
@@ -63,10 +60,7 @@ static char	*handle_quotes(char **cmd, char **envp)
 	quote = **cmd;
 	end = ft_strchr(*cmd + 1, quote);
 	if (!end)
-	{
-		*cmd = *cmd + 1;
-		return (ft_strdup(""));
-	}
+		return (NULL);
 	if (quote == '\'')
 		tmp = ft_strndup(*cmd + 1, end - *cmd - 1);
 	else
@@ -79,11 +73,13 @@ static char	*handle_quotes(char **cmd, char **envp)
 	return (tmp);
 }
 
-static char	*handle_token(char *cmd, char **envp, bool	flag)
+char	*handle_token(char *cmd, char **envp, bool	flag)
 {
 	char	*result;
 	char	*tmp;
 
+	if (!cmd)
+		return (NULL);
 	result = ft_strdup("");
 	if (!result)
 		return (NULL);
@@ -108,25 +104,41 @@ static char	*handle_token(char *cmd, char **envp, bool	flag)
 	return (result);
 }
 
-char	**handle_env(char **cmd, char **envp)
-{
-	int		i;
-	char	*s_ptr;
+// t_parsed_cmd *handle_env(t_parsed_cmd *cmd, char **envp)
+// {
+// 	int		i;
+// 	char	*s_ptr;
+// 	t_redirection	*tmp;
+// 	t_parsed_cmd *head;
 
-	i = 0;
-	if (!cmd)
-		return (NULL);
-	while (cmd[i])
-	{
-		s_ptr = cmd[i];
-		cmd[i] = handle_token(cmd[i], envp, 1);
-		if (cmd[i] == NULL)
-		{
-			free2(cmd);
-			return (NULL);
-		}
-		free(s_ptr);
-		i++;
-	}
-	return (cmd);
-}
+// 	if (!cmd)
+// 		return (NULL);
+// 	head = cmd;
+// 	while (cmd)
+// 	{
+// 		i = 0;
+// 		while (cmd->cmds[i])
+// 		{
+// 			s_ptr = cmd->cmds[i];
+// 			cmd->cmds[i] = handle_token(cmd->cmds[i], envp, 1);
+// 			if (cmd->cmds[i] == NULL)
+// 			{
+// 				return (NULL);
+// 			}
+// 			free(s_ptr);
+// 			i++;
+// 		}
+// 		tmp = cmd->redir;
+// 		while (tmp)
+// 		{
+// 			s_ptr = tmp->fd_name;
+// 			tmp->fd_name = handle_token(tmp->fd_name, envp, 1);
+// 			if (tmp->fd_name == NULL)
+// 				return (NULL);
+// 			free(s_ptr);
+// 			tmp = tmp->next;
+// 		}
+// 		cmd = cmd->next;
+// 	}
+// 	return (head);
+// }

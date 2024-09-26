@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 15:45:07 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/26 03:51:53 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,20 @@ typedef struct s_flags
 	bool	in_quote;
 }	t_flags;
 
+typedef struct s_redirection
+{
+	char					*op;
+	char					*fd_name;
+	struct s_redirection	*next;
+} t_redirection;
+
+typedef struct s_parsed_cmd
+{
+    char					**cmds;
+    t_redirection			*redir;
+    struct s_parsed_cmd	*next;
+} t_parsed_cmd;
+
 typedef struct s_cmd_table
 {
 	struct s_cmd_table	*prev;
@@ -68,16 +82,17 @@ typedef struct s_cmd_table
 	char				**cmd;
 	int					in;
 	int					out;
+	int					pid;
 }	t_cmd_table;
 
 /*------------------init functions---------------------*/
 
 // ctrl-c, ctrl-d, ctrl-\の動作を設定する。
-void	set_signal(void);
+void		set_signal(void);
 
 // 環境変数を初期化する。環境変数の配列envpはmallocで確保するため、
 // プログラム終了時にfreeする必要がある。
-int		init_envp(char ***envpp);
+int			init_envp(char ***envpp);
 
 /*--------------processor functions --------------------*/
 
@@ -86,11 +101,11 @@ t_cmd_table	*parseline(char *line, char **envp);
 
 // 一つのcommand lineを実行する。
 // PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。
-int		exec(char **args, char ***envpp);
+int			exec(char **args, char ***envpp);
 
 // cmd tableのリストにあるすべてのコマンドを実行する
-void	executor(t_cmd_table *cmd, char ***envpp);
-void	freecmd(t_cmd_table *cmd);
+void		executor(t_cmd_table *cmd, char ***envpp);
+void		freecmd(t_cmd_table *cmd);
 
 /*----------functions about environment variables--------*/
 
@@ -101,44 +116,44 @@ void	freecmd(t_cmd_table *cmd);
 
 // 環境変数名=nameの環境変数の値をvalueに設定する
 // 例: ft_setenv(envpp, "HOME", "/home/yxu")
-int		ft_setenv(char ***envpp, char *name, char *value);
+int			ft_setenv(char ***envpp, char *name, char *value);
 
 // 環境変数名=nameの環境変数の値を返す
 // 例: ft_getenv(envp, "HOME")
-char	*ft_getenv(char **envp, char *name);
+char		*ft_getenv(char **envp, char *name);
 
 // 環境変数名=nameの環境変数のポインタを返す
 // 例: ft_getenv_item(envp, "HOME")
-char	**ft_getenv_item(char **envp, char *name);
+char		**ft_getenv_item(char **envp, char *name);
 
 /*-----------------builtin funcitons---------------------*/
 
-int		is_builtin(char *command);
-int		exec_bulitin(char **args, char ***envpp);
-int		echo(char **args);
-int		pwd(void);
-int		env(char **envp);
-int		cd(char **args, char ***envpp);
-int		export(char **args, char ***envpp);
-int		builtin_exit(char **args);
+int			is_builtin(char *command);
+int			exec_bulitin(char **args, char ***envpp);
+int			echo(char **args);
+int			pwd(void);
+int			env(char **envp);
+int			cd(char **args, char ***envpp);
+int			export(char **args, char ***envpp);
+int			builtin_exit(char **args);
 
 // unsetする環境変数をfreeしなく、空の文字列に書き換える
-int		unset(char **args, char ***envpp);
+int			unset(char **args, char ***envpp);
 
 /*---------------------utilities-------------------------*/
 
 // ダブルフリー
-void	free2(char **p);
+void		free2(char **p);
 
 // トリプルジョイン
-char	*ft_strjoin3(char *s1, char *s2, char *s3);
+char		*ft_strjoin3(char *s1, char *s2, char *s3);
 
 // 要素数をカウントする
-int		ft_count(char **p);
+int			ft_count(char **p);
 
-char	*ft_strndup(char *s, size_t n);
+char		*ft_strndup(char *s, size_t n);
 
-char	*ft_strncat(char *dst, const char *src, size_t n);
+char		*ft_strncat(char *dst, const char *src, size_t n);
 
 /*---------------------utilitie-------------------------*/
 
