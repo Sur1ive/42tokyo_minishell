@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/26 18:33:11 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/27 18:05:20 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ static void	executor_nofork(t_cmd_table *cmd, char ***envpp)
 
 static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 {
+	int	result;
+
 	if (cmd->pid == -1)
 	{
 		ft_dprintf(2, "minishell: %s\n", strerror(errno));
@@ -92,12 +94,13 @@ static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 			close(cmd->next->in);
 		if (replace_io(cmd->in, cmd->out) == -1)
 			exit(GENERAL_ERR);
-		if (exec(cmd->cmd, envpp) != 0)
+		result = exec(cmd->cmd, envpp);
+		if (result != 0)
 		{
 			if (errno)
 				ft_dprintf(2, "minishell: %s: %s\n",
 					cmd->cmd[0], strerror(errno));
-			exit(GENERAL_ERR);
+			exit(result);
 		}
 		exit(EXIT_SUCCESS);
 	}

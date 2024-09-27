@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 18:36:14 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 15:49:49 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/27 18:16:54 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static char	*search_executable(char *command, char *filepath_dest, char *path)
 		ft_memset(filepath_dest, 0, PATH_MAX + 1);
 		ft_memcpy(filepath_dest, filepath_malloc, ft_strlen(filepath_malloc));
 		free(filepath_malloc);
-		if (stat(filepath_dest, &st) == 0)
+		if (stat(filepath_dest, &st) == 0 && S_ISREG(st.st_mode))
 		{
 			free2(dirs);
 			return (filepath_dest);
@@ -48,7 +48,14 @@ static int	exec_extern(char **args, char **envp)
 		ft_dprintf(2, "%s: command not found\n", args[0]);
 		exit(CMD_NOT_FOUND);
 	}
-	return (execve(filepath, args, envp));
+	execve(filepath, args, envp);
+	if (errno == EACCES)
+	{
+		ft_dprintf(2, "bash: %s: Permission denied\n", filepath);
+		errno = 0;
+		exit(CANNOT_EXEC);
+	}
+	return (GENERAL_ERR);
 }
 
 static int	exec_cmd(char **args, char ***envpp)
@@ -62,27 +69,40 @@ static int	exec_cmd(char **args, char ***envpp)
 		return (exec_extern(args, *envpp));
 }
 
-int	exec(char **args, char ***envpp)
+static int	exec_dir(char **args, char ***envpp)
 {
 	struct stat	st;
-	int			result;
 
-	if (args == NULL || args[0] == NULL)
-		return (0);
 	if (ft_strcmp(args[0], ".") * ft_strcmp(args[0], "..") == 0)
 	{
 		ft_dprintf(2, "%s: command not found\n", args[0]);
 		exit(CMD_NOT_FOUND);
 	}
+	if (stat(args[0], &st))
+	{
+		if (errno == ENOENT)
+			return (CMD_NOT_FOUND);
+		return (GENERAL_ERR);
+	}
+	if (S_ISDIR(st.st_mode))
+	{
+		ft_dprintf(2, "minishell: %s: Is a directory\n", args[0]);
+		exit(CANNOT_EXEC);
+	}
+	return (execve(args[0], args, *envpp));
+}
+
+int	exec(char **args, char ***envpp)
+{
+	int	result;
+
+	if (args == NULL || args[0] == NULL)
+		return (0);
 	if (ft_strchr(args[0], '/') != NULL)
 	{
-		stat(args[0], &st);
-		if (S_ISDIR(st.st_mode))
-		{
-			ft_dprintf(2, "minishell: %s: Is a directory\n", args[0]);
-			exit(CANNOT_EXEC);
-		}
-		result = execve(args[0], args, *envpp);
+		result = exec_dir(args, envpp);
+		if (errno == EACCES)
+			return (CANNOT_EXEC);
 	}
 	else
 		result = exec_cmd(args, envpp);
