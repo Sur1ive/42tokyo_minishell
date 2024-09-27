@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:07:41 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 19:35:37 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/26 16:01:36 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,13 @@ static char	**split_env_item(char *arg)
 	char	**splited;
 	int		equal_i;
 
-	if (ft_strchr(arg, '=') != NULL)
-		equal_i = ft_strchr(arg, '=') - arg;
-	else
-		equal_i = ft_strlen(arg);
+	equal_i = ft_strchr(arg, '=') - arg;
 	splited = (char **)malloc(sizeof(char *) * 3);
 	if (!splited)
 		return (NULL);
 	splited[0] = (char *)malloc(sizeof(char) * (equal_i + 1));
 	splited[1] = (char *)
-		malloc(sizeof(char) * ((ft_strlen(arg) - equal_i) || 1));
+		malloc(sizeof(char) * (ft_strlen(arg) - equal_i));
 	splited[2] = NULL;
 	if (!splited[0] || !splited[1])
 	{
@@ -34,10 +31,7 @@ static char	**split_env_item(char *arg)
 		return (NULL);
 	}
 	ft_strlcpy(splited[0], arg, equal_i + 1);
-	if ((size_t)equal_i != ft_strlen(arg))
-		ft_strlcpy(splited[1], arg + equal_i + 1, ft_strlen(arg) - equal_i);
-	else
-		splited[1][0] = '\0';
+	ft_strlcpy(splited[1], arg + equal_i + 1, ft_strlen(arg) - equal_i);
 	return (splited);
 }
 
@@ -59,12 +53,15 @@ static int	is_valid_env(char *arg)
 	return (1);
 }
 
-static void	print_env_error(char *arg)
+static int	handle_env_error(char *arg)
 {
+	if (is_valid_env(arg) && ft_strchr(arg, '=') == NULL)
+		return (0);
 	if (ft_strlen(arg) == 0)
 		ft_dprintf(2, "minishell: export: `': not a valid identifier\n");
 	else
 		ft_dprintf(2, "minishell: export: %s: not a valid identifier\n", arg);
+	return (1);
 }
 
 int	export(char **args, char ***envpp)
@@ -77,7 +74,7 @@ int	export(char **args, char ***envpp)
 	fail_flag = 0;
 	while (args[i])
 	{
-		if (is_valid_env(args[i]))
+		if (is_valid_env(args[i]) && ft_strchr(args[i], '='))
 		{
 			splited = split_env_item(args[i]);
 			if (splited == NULL || ft_setenv(envpp, splited[0], splited[1]))
@@ -85,11 +82,8 @@ int	export(char **args, char ***envpp)
 			errno = 0;
 			free2(splited);
 		}
-		else
-		{
-			print_env_error(args[i]);
+		else if (handle_env_error(args[i]) == 1)
 			fail_flag = 1;
-		}
 		i++;
 	}
 	return (fail_flag);
