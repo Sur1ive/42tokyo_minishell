@@ -6,14 +6,14 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:27:46 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/26 10:23:08 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/28 05:15:14 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parse.h"
 
-static void	free_redirections(t_redirection *redir)
+void	free_redirections(t_redirection *redir)
 {
 	t_redirection	*tmp;
 
@@ -29,9 +29,9 @@ static void	free_redirections(t_redirection *redir)
 	}
 }
 
-void	free_p_table(t_parsed_cmd *table, int type)
+void	free_table(t_cmd_table *table)
 {
-	t_parsed_cmd *tmp;
+	t_cmd_table	*tmp;
 
 	while (table)
 	{
@@ -39,8 +39,8 @@ void	free_p_table(t_parsed_cmd *table, int type)
 		table = table->next;
 		if (tmp->redir)
 			free_redirections(tmp->redir);
-		if (tmp->cmds && type)
-			free2(tmp->cmds);
+		if (tmp->cmd)
+			free2(tmp->cmd);
 		free(tmp);
 	}
 }

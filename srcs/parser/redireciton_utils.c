@@ -6,24 +6,22 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/26 11:49:02 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/28 05:20:20 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parse.h"
 
-t_cmd_table	*create_cmd_table_entry(t_parsed_cmd *p_cmds)
+t_cmd_table	*create_cmd_table_entry(void)
 {
 	t_cmd_table	*entry;
 
 	entry = (t_cmd_table *)malloc(sizeof(t_cmd_table));
 	if (!entry)
 		return (NULL);
-	if (p_cmds)
-		entry->cmd = p_cmds->cmds;
-	else
-		entry->cmd = NULL;
+	entry->cmd = NULL;
+	entry->redir = NULL;
 	entry->in = STDIN_FILENO;
 	entry->out = STDOUT_FILENO;
 	entry->next = NULL;
@@ -86,4 +84,3 @@ ssize_t	ft_getline(char **lineptr, size_t *n)
 		return (total_len);
 	return (-1);
 }
-

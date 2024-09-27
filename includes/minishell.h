@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/26 03:51:53 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/27 23:41:49 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,17 +68,11 @@ typedef struct s_redirection
 	struct s_redirection	*next;
 } t_redirection;
 
-typedef struct s_parsed_cmd
-{
-    char					**cmds;
-    t_redirection			*redir;
-    struct s_parsed_cmd	*next;
-} t_parsed_cmd;
-
 typedef struct s_cmd_table
 {
 	struct s_cmd_table	*prev;
 	struct s_cmd_table	*next;
+	t_redirection		*redir;
 	char				**cmd;
 	int					in;
 	int					out;

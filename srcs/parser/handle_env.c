@@ -1,17 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_env.c                                      :+:      :+:    :+:   */
+/*   handle_env.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 16:39:32 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/03 01:52:44 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/28 05:14:01 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parse.h"
+
+static char	*handle_token(char *cmd, char **envp, bool	flag, bool *env_flag);
 
 static char	*extract_var_name(char **line)
 {
@@ -23,7 +25,7 @@ static char	*extract_var_name(char **line)
 	return (ft_strndup(var_start, *line - var_start));
 }
 
-static char	*process_variable(char **line, char **envp)
+static char	*process_variable(char **line, char **envp, bool *env_flag)
 {
 	char	*var_name;
 	char	*var_value;
@@ -42,10 +44,10 @@ static char	*process_variable(char **line, char **envp)
 		var_value = ft_getenv(envp, var_name);
 		free(var_name);
 		if (var_value)
-		{
-			var_value = ft_strdup(var_value);
-			return (var_value);
-		}
+			return (ft_strdup(var_value));
+		else
+			*env_flag = true;
+		return (NULL);
 	}
 	return (ft_strdup(""));
 }
@@ -66,14 +68,14 @@ static char	*handle_quotes(char **cmd, char **envp)
 	else
 	{
 		sub_str = ft_strndup(*cmd + 1, end - *cmd - 1);
-		tmp = handle_token(sub_str, envp, 0);
+		tmp = handle_token(sub_str, envp, 0, NULL);
 		free(sub_str);
 	}
 	*cmd = end + 1;
 	return (tmp);
 }
 
-char	*handle_token(char *cmd, char **envp, bool	flag)
+static char	*handle_token(char *cmd, char **envp, bool	flag, bool *env_flag)
 {
 	char	*result;
 	char	*tmp;
@@ -88,7 +90,7 @@ char	*handle_token(char *cmd, char **envp, bool	flag)
 		if (flag && (*cmd == '"' || *cmd == '\''))
 			tmp = handle_quotes(&cmd, envp);
 		else if (*cmd == '$')
-			tmp = process_variable(&cmd, envp);
+			tmp = process_variable(&cmd, envp, env_flag);
 		else
 		{
 			tmp = ft_strndup(cmd, 1);
@@ -100,45 +102,67 @@ char	*handle_token(char *cmd, char **envp, bool	flag)
 			return (NULL);
 		}
 		result = ft_strjoin_free(result, tmp);
+		if (!result)
+			return (NULL);
 	}
 	return (result);
 }
 
-// t_parsed_cmd *handle_env(t_parsed_cmd *cmd, char **envp)
-// {
-// 	int		i;
-// 	char	*s_ptr;
-// 	t_redirection	*tmp;
-// 	t_parsed_cmd *head;
+t_cmd_table	*expand_envs(t_cmd_table	*table, char **envp)
+{
+	int				i;
+	int				index;
+	bool			env_flag;
+	char			*tmp;
+	t_cmd_table		*current;
+	t_redirection	*r_current;
 
-// 	if (!cmd)
-// 		return (NULL);
-// 	head = cmd;
-// 	while (cmd)
-// 	{
-// 		i = 0;
-// 		while (cmd->cmds[i])
-// 		{
-// 			s_ptr = cmd->cmds[i];
-// 			cmd->cmds[i] = handle_token(cmd->cmds[i], envp, 1);
-// 			if (cmd->cmds[i] == NULL)
-// 			{
-// 				return (NULL);
-// 			}
-// 			free(s_ptr);
-// 			i++;
-// 		}
-// 		tmp = cmd->redir;
-// 		while (tmp)
-// 		{
-// 			s_ptr = tmp->fd_name;
-// 			tmp->fd_name = handle_token(tmp->fd_name, envp, 1);
-// 			if (tmp->fd_name == NULL)
-// 				return (NULL);
-// 			free(s_ptr);
-// 			tmp = tmp->next;
-// 		}
-// 		cmd = cmd->next;
-// 	}
-// 	return (head);
-// }
+	env_flag = false;
+	current = table;
+	while (current)
+	{
+		r_current = current->redir;
+		while (r_current)
+		{
+			tmp = r_current->fd_name;
+			r_current->fd_name = handle_token(r_current->fd_name, envp, 1, &env_flag);
+			if (!r_current->fd_name)
+			{
+				if (env_flag)
+				{
+					ft_dprintf(2, " ambiguous redirect\n");
+					g_exit_code = MISUSE_OF_BUILTINS;
+				}
+				free(tmp);
+				free_table(table);
+				return (NULL);
+			}
+			free(tmp);
+			r_current = r_current->next;
+		}
+		i = 0;
+		index = 0;
+		while (current->cmd[i])
+		{
+			tmp = current->cmd[i];
+			current->cmd[index] = handle_token(current->cmd[i], envp, 1, &env_flag);
+			if (!current->cmd[i] && !env_flag)
+			{
+				free(tmp);
+				free_table(table);
+				return (NULL);
+			}
+			if (env_flag)
+			{
+				index--;
+				env_flag = false;
+			}
+			free(tmp);
+			i++;
+			index++;
+		}
+		current->cmd[index] = NULL;
+		current = current->next;
+	}
+	return (table);
+}

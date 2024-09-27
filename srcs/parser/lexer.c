@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_utils.c                                      :+:      :+:    :+:   */
+/*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 03:54:38 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/26 03:52:59 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/28 05:13:03 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ static void	start_quote(char **line, t_flags *flag)
 {
 	flag->in_quote = true;
 	flag->quote_char = **line;
-	if (*(*line - 1) == ' ' || *(*line - 1) == '\t' || *(*line - 1) == '|' || *(*line - 1) == '<' || *(*line - 1) == '>')
+	if (*(*line - 1) == ' ' || *(*line - 1) == '\t' || *(*line - 1) == '|'
+		|| *(*line - 1) == '<' || *(*line - 1) == '>')
 	{
 		flag->start = *line;
 		flag->in_word = true;
@@ -101,12 +102,14 @@ char	**lexer(char *line, char **command)
 	int		i;
 	t_flags	flag;
 
+	while (*line == ' ' || *line == '\t')
+		line++;
+	if (*line == '\0' || *line == '\n')
+		return (NULL);
 	wc = count_words(line);
 	command = malloc((wc + 1) * sizeof(char *));
 	if (!command)
 		return (NULL);
-	while (*line == ' ' || *line == '\t')
-		line++;
 	i = 0;
 	flag.in_word = true;
 	flag.start = line;
