@@ -3,7 +3,7 @@ SRC_DIR = srcs/
 SRCS	= $(shell find $(SRC_DIR) -type f -name "*.c")
 OBJS	= $(SRCS:.c=.o)
 LIB		= ./libft/libft.a
-CC		= clang -Wall -Wextra -Werror -Iincludes
+CC		= cc -Wall -Wextra -Werror -Iincludes
 
 all: $(NAME)
 
