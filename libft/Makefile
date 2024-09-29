@@ -16,7 +16,7 @@ SRCS	= ft_isdigit.c ft_memset.c ft_striteri.c ft_strrchr.c\
 		ft_lstclear.c ft_lstdelone.c ft_lstiter.c
 SRCS	:= $(addprefix $(SRC_DIR), $(SRCS))
 OBJS	= $(SRCS:.c=.o)
-CC		= cc
+CC		= clang
 
 %.o: %.c
 	$(CC) -Wall -Wextra -Werror -I. -c $< -o $@

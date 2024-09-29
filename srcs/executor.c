@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/27 18:05:20 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/29 14:41:35 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ static void	executor_nofork(t_cmd_table *cmd, char ***envpp)
 	int	in_cp;
 	int	out_cp;
 
+	if (cmd->in < 0 || cmd->out < 0)
+		return ;
 	in_cp = dup(STDIN_FILENO);
 	out_cp = dup(STDOUT_FILENO);
 	if (in_cp == -1 || out_cp == -1 || replace_io(cmd->in, cmd->out) == -1)
@@ -90,9 +92,10 @@ static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 	}
 	else if (cmd->pid == 0)
 	{
+
 		if (cmd->next)
 			close(cmd->next->in);
-		if (replace_io(cmd->in, cmd->out) == -1)
+		if (cmd->in < 0 || cmd->out < 0 || replace_io(cmd->in, cmd->out) == -1)
 			exit(GENERAL_ERR);
 		result = exec(cmd->cmd, envpp);
 		if (result != 0)
