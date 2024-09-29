@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 21:38:38 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 14:16:20 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/29 18:29:57 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ static void	deal_signal(int signum)
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
+		rl_already_prompted = 1;
 	}
 	else if (signum == SIGQUIT)
 		return ;

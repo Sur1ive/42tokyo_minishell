@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/20 15:32:19 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/29 18:30:45 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,13 @@ int	main(void)
 	while (input != NULL)
 	{
 		free(input);
-		add_history(rl_line_buffer);
+		if (ft_strlen(rl_line_buffer) != 0)
+			add_history(rl_line_buffer);
 		cmds = parseline(rl_line_buffer, envp);
 		executor(cmds, &envp);
 		freecmd(cmds);
 		input = readline("$ ");
+		rl_already_prompted = 0;
 	}
 	free2(envp);
 	return (0);
