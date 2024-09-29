@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   free_error.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:27:46 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/28 05:15:14 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/29 16:00:57 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,32 @@ void	free_table(t_cmd_table *table)
 			free2(tmp->cmd);
 		free(tmp);
 	}
+}
+
+static int	print_syntax_error(char *token)
+{
+	ft_dprintf(2, " syntax error near unexpected token `%s'\n", token);
+	g_exit_code = MISUSE_OF_BUILTINS;
+	return (-1);
+}
+
+int	syntax_error(char **cmd)
+{
+	int	i;
+
+	i = 0;
+	if (ft_strcmp(cmd[0], "|") == 0)
+		return (print_syntax_error(cmd[0]));
+	while (cmd[i])
+	{
+		if (is_redirection(cmd[i]))
+		{
+			if (!cmd[i + 1])
+				return (print_syntax_error("newline"));
+			if (is_redirection(cmd[i + 1]) || ft_strcmp(cmd[i + 1], "|") == 0)
+				return (print_syntax_error(cmd[i + 1]));
+		}
+		i++;
+	}
+	return (1);
 }

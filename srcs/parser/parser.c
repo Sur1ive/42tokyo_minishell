@@ -6,41 +6,12 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:28:57 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/28 05:19:28 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/29 15:59:56 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parse.h"
-
-int	syntax_error(char **cmd)
-{
-	int	i;
-
-	i = 0;
-	if (!cmd)
-		return (0);
-	while (cmd[i])
-	{
-		if (is_redirection(cmd[i]))
-		{
-			if (!cmd[i + 1])
-			{
-				ft_dprintf(2, " syntax error near unexpected token `newline'\n");
-				g_exit_code = MISUSE_OF_BUILTINS;
-				return (-1);
-			}
-			else if (is_redirection(cmd[i + 1]) || ft_strcmp(cmd[i + 1], "|") == 0)
-			{
-				ft_dprintf(2, " syntax error near unexpected token `%s'\n", cmd[i + 1]);
-				g_exit_code = MISUSE_OF_BUILTINS;
-				return (-1);
-			}
-		}
-		i++;
-	}
-	return (1);
-}
 
 int	malloc_current_cmds(t_cmd_table *current, char **cmds, int i)
 {
@@ -92,6 +63,18 @@ int	create_redirection(t_redirection **redir, char **cmds, int *i)
 	return (0);
 }
 
+static int	process_cmd(t_cmd_table **current, char **cmds, int *i, int *index)
+{
+	if (is_redirection(cmds[*i]))
+		return (create_redirection(&((*current)->redir), cmds, i));
+	if (ft_strcmp(cmds[*i], "|") == 0)
+		return (create_next_cmd(current, index));
+	(*current)->cmd[*index] = ft_strdup(cmds[*i]);
+	if (!(*current)->cmd[(*index)++])
+		return (-1);
+	return (0);
+}
+
 t_cmd_table	*parser(char **cmds)
 {
 	t_cmd_table		*t_cmds;
@@ -102,7 +85,6 @@ t_cmd_table	*parser(char **cmds)
 
 	i = 0;
 	index = 0;
-	flag = 0;
 	t_cmds = create_cmd_table_entry();
 	if (!t_cmds)
 		return (NULL);
@@ -110,22 +92,10 @@ t_cmd_table	*parser(char **cmds)
 	while (cmds[i])
 	{
 		if (malloc_current_cmds(current, cmds, i) == -1)
-			return (NULL);
-		if (is_redirection(cmds[i]))
-			flag = create_redirection(&(current->redir), cmds, &i);
-		else if (ft_strcmp(cmds[i], "|") == 0)
-			flag = create_next_cmd(&current, &index);
-		else
-		{
-			current->cmd[index++] = ft_strdup(cmds[i]);
-			if (!current->cmd[index - 1])
-				flag = -1;
-		}
+			return (free_table(t_cmds), NULL);
+		flag = process_cmd(&current, cmds, &i, &index);
 		if (flag == -1)
-		{
-			free_table(t_cmds);
-			return (NULL);
-		}
+			return (free_table(t_cmds), NULL);
 		i++;
 	}
 	current->cmd[index] = NULL;
