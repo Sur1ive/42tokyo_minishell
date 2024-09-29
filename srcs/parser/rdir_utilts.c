@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redireciton_utils.c                                :+:      :+:    :+:   */
+/*   rdir_utilts.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/28 05:20:20 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/29 18:28:23 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,23 @@ int	is_redirection(char *token)
 	return (0);
 }
 
+int	handle_pipe(t_cmd_table **current)
+{
+	int	pipefd[2];
+
+	if (pipe(pipefd) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
+	if ((*current)->out == STDOUT_FILENO)
+		(*current)->out = pipefd[1];
+	(*current)->next->prev = *current;
+	*current = (*current)->next;
+	(*current)->in = pipefd[0];
+	return (0);
+}
+
 void	*ft_realloc(void *ptr, size_t new_size)
 {
 	void	*new_ptr;
@@ -56,31 +73,30 @@ void	*ft_realloc(void *ptr, size_t new_size)
 	return (new_ptr);
 }
 
-ssize_t	ft_getline(char **lineptr, size_t *n)
+int	read_and_process_line(int pipefd, char *delimiter, char **envp)
 {
-	char	*buffer;
-	size_t	total_len;
+	char	*line;
+	char	*expanded_line;
 
-	total_len = 0;
-	if (*lineptr == NULL)
+	line = readline("> ");
+	if (!line)
+		return (-1);
+	expanded_line = handle_token(line, envp, 1, NULL);
+	free(line);
+	if (!expanded_line)
+		return (-1);
+	if (ft_strcmp(expanded_line, delimiter) == 0)
 	{
-		*n = BUFFER_SIZE;
-		*lineptr = malloc(BUFFER_SIZE);
+		free(expanded_line);
+		return (0);
 	}
-	buffer = *lineptr;
-	while (read(STDIN_FILENO, &buffer[total_len], 1) > 0)
+	if (write(pipefd, expanded_line, ft_strlen(expanded_line)) == -1
+		|| write(pipefd, "\n", 1) == -1)
 	{
-		if (total_len >= *n - 1)
-		{
-			*n *= 2;
-			*lineptr = ft_realloc(*lineptr, *n);
-			buffer = *lineptr;
-		}
-		if (buffer[total_len] == '\n')
-			break ;
+		perror("write");
+		free(expanded_line);
+		return (-1);
 	}
-	buffer[total_len] = '\0';
-	if (total_len > 0)
-		return (total_len);
-	return (-1);
+	free(expanded_line);
+	return (1);
 }
