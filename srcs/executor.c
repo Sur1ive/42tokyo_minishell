@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/30 14:44:22 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/30 19:42:02 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 	}
 	else if (cmd->pid == 0)
 	{
-
 		if (cmd->next)
 			close(cmd->next->in);
 		if (cmd->in < 0 || cmd->out < 0 || replace_io(cmd->in, cmd->out) == -1)
