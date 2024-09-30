@@ -6,12 +6,38 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 01:28:40 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/28 05:14:38 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/30 19:15:39 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parse.h"
+
+int	is_redirection(char *token)
+{
+	if (ft_strcmp(token, ">") == 0 || ft_strcmp(token, ">>") == 0
+		|| ft_strcmp(token, "<") == 0 || ft_strcmp(token, "<<") == 0)
+		return (1);
+	return (0);
+}
+
+int	count_arg(char **command)
+{
+	int	count;
+	int	i;
+
+	count = 0;
+	i = 0;
+	while (command[i] && ft_strcmp(command[i], "|") != 0)
+	{
+		if (command[i + 1] && is_redirection(command[i]))
+			i++;
+		else
+			count++;
+		i++;
+	}
+	return (count);
+}
 
 static void	count_special_char(char **line, int *wc, bool *in_word)
 {
@@ -59,51 +85,4 @@ int	count_words(char *line)
 		line++;
 	}
 	return (wc);
-}
-
-char	*ft_strjoin_free(char const *s1, char const *s2)
-{
-	char	*str;
-	char	*start;
-	char	*s1_start;
-	char	*s2_start;
-
-	if (s1 == NULL)
-		return (NULL);
-	str = (char *)malloc(ft_strlen((char *)s1) + ft_strlen((char *)s2) + 1);
-	start = str;
-	s1_start = (char *)s1;
-	s2_start = (char *)s2;
-	if (str == NULL)
-	{
-		free(s1_start);
-		free(s2_start);
-		return (NULL);
-	}
-	while (*s1 != '\0')
-		*str++ = *s1++;
-	while (s2 && *s2 != '\0')
-		*str++ = *s2++;
-	*str = '\0';
-	free(s1_start);
-	free(s2_start);
-	return (start);
-}
-
-int	count_arg(char **command)
-{
-	int	count;
-	int	i;
-
-	count = 0;
-	i = 0;
-	while (command[i] && ft_strcmp(command[i], "|") != 0)
-	{
-		if (command[i + 1] && is_redirection(command[i]))
-			i++;
-		else
-			count++;
-		i++;
-	}
-	return (count);
 }

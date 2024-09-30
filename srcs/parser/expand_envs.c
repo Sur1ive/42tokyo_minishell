@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 16:07:45 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/29 18:09:02 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/30 19:34:26 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	redir_env(t_redirection *r_current, char **envp,
 		{
 			if (*env_flag)
 			{
-				ft_dprintf(2, " ambiguous redirect\n");
+				ft_dprintf(2, "minishell: %s: ambiguous redirect\n", tmp);
 				g_exit_code = MISUSE_OF_BUILTINS;
 			}
 			free(tmp);

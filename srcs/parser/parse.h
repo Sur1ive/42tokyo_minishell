@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:42:36 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/29 16:31:36 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/30 19:15:59 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void		*ft_realloc(void *ptr, size_t new_size);
 ssize_t		ft_getline(char **lineptr, size_t *n);
 int			count_arg(char **command);
 int			count_words(char *line);
-char		*ft_strjoin_free(char const *s1, char const *s2);
 char		*handle_token(char *cmd, char **envp, bool	flag, bool *env_flag);
 int			handle_pipe(t_cmd_table **current);
 

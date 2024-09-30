@@ -6,33 +6,38 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 20:26:35 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/29 18:28:08 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/30 19:28:34 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parse.h"
 
-int	read_and_process_line(int pipefd, char *delimiter, char **envp);
+int	set_heredoc(char *delimiter, char **envp);
 
-int	handle_heredoc(char *delimiter, char **envp)
+int	handle_heredocs(t_cmd_table *current, char **envp, int *here_fd)
 {
-	int		pipefd[2];
-	int		status;
+	t_redirection	*tmp;
 
-	if (pipe(pipefd) == -1)
+	tmp = current->redir;
+	while (tmp)
 	{
-		perror("pipe");
-		return (-1);
+		if (ft_strcmp(tmp->op, "<<") == 0)
+		{
+			if (*here_fd != STDOUT_FILENO)
+				close(*here_fd);
+			*here_fd = set_heredoc(tmp->fd_name, envp);
+			if (*here_fd == -1)
+			{
+				ft_dprintf(2, " %s\n", strerror(errno));
+				errno = 0;
+				g_exit_code = 1;
+				return (-1);
+			}
+		}
+		tmp = tmp->next;
 	}
-	while (1)
-	{
-		status = read_and_process_line(pipefd[1], delimiter, envp);
-		if (status <= 0)
-			break ;
-	}
-	close(pipefd[1]);
-	return (pipefd[0]);
+	return (0);
 }
 
 int	output_redirection(t_cmd_table *current, t_redirection *tmp)
@@ -53,17 +58,17 @@ int	output_redirection(t_cmd_table *current, t_redirection *tmp)
 	return (0);
 }
 
-int	input_redirection(t_cmd_table *current, t_redirection *tmp, char **envp)
+int	input_redirection(t_cmd_table *current, t_redirection *tmp, int here_fd)
 {
 	if (current->in != STDIN_FILENO)
 		close(current->in);
 	if (ft_strcmp(tmp->op, "<") == 0)
 		current->in = open(tmp->fd_name, O_RDONLY);
 	else
-		current->in = handle_heredoc(tmp->fd_name, envp);
+		current->in = here_fd;
 	if (current->in == -1)
 	{
-		ft_dprintf(2, " %s\n", strerror(errno));
+		ft_dprintf(2, "minishell: %s: %s\n", tmp->fd_name, strerror(errno));
 		errno = 0;
 		g_exit_code = 1;
 		return (-1);
@@ -74,7 +79,11 @@ int	input_redirection(t_cmd_table *current, t_redirection *tmp, char **envp)
 int	handle_redirection(t_cmd_table *current, char **envp)
 {
 	t_redirection	*tmp;
+	int				here_fd;
 
+	here_fd = STDOUT_FILENO;
+	if (handle_heredocs(current, envp, &here_fd) == -1)
+		return (-1);
 	tmp = current->redir;
 	while (tmp)
 	{
@@ -85,7 +94,7 @@ int	handle_redirection(t_cmd_table *current, char **envp)
 		}
 		else if (ft_strcmp(tmp->op, "<") == 0 || ft_strcmp(tmp->op, "<<") == 0)
 		{
-			if (input_redirection(current, tmp, envp) == -1)
+			if (input_redirection(current, tmp, here_fd) == -1)
 				return (-1);
 		}
 		tmp = tmp->next;

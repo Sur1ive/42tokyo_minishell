@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/29 18:28:23 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/30 19:13:09 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,6 @@ t_cmd_table	*create_cmd_table_entry(void)
 	entry->next = NULL;
 	entry->prev = NULL;
 	return (entry);
-}
-
-int	is_redirection(char *token)
-{
-	if (ft_strcmp(token, ">") == 0 || ft_strcmp(token, ">>") == 0
-		|| ft_strcmp(token, "<") == 0 || ft_strcmp(token, "<<") == 0)
-		return (1);
-	return (0);
 }
 
 int	handle_pipe(t_cmd_table **current)
@@ -99,4 +91,24 @@ int	read_and_process_line(int pipefd, char *delimiter, char **envp)
 	}
 	free(expanded_line);
 	return (1);
+}
+
+int	set_heredoc(char *delimiter, char **envp)
+{
+	int		pipefd[2];
+	int		status;
+
+	if (pipe(pipefd) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
+	while (1)
+	{
+		status = read_and_process_line(pipefd[1], delimiter, envp);
+		if (status <= 0)
+			break ;
+	}
+	close(pipefd[1]);
+	return (pipefd[0]);
 }

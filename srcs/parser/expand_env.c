@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 16:39:32 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/29 16:34:25 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/30 19:36:13 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,35 @@
 #include "parse.h"
 
 char	*handle_token(char *cmd, char **envp, bool	flag, bool *env_flag);
+
+static char	*ft_strjoin_free(char const *s1, char const *s2)
+{
+	char	*str;
+	char	*start;
+	char	*s1_start;
+	char	*s2_start;
+
+	if (s1 == NULL)
+		return (NULL);
+	str = (char *)malloc(ft_strlen((char *)s1) + ft_strlen((char *)s2) + 1);
+	start = str;
+	s1_start = (char *)s1;
+	s2_start = (char *)s2;
+	if (str == NULL)
+	{
+		free(s1_start);
+		free(s2_start);
+		return (NULL);
+	}
+	while (*s1 != '\0')
+		*str++ = *s1++;
+	while (s2 && *s2 != '\0')
+		*str++ = *s2++;
+	*str = '\0';
+	free(s1_start);
+	free(s2_start);
+	return (start);
+}
 
 static char	*extract_var_name(char **line)
 {
@@ -86,9 +115,7 @@ char	*handle_token(char *cmd, char **envp, bool	flag, bool *env_flag)
 	if (!cmd)
 		return (NULL);
 	result = ft_strdup("");
-	if (!result)
-		return (NULL);
-	while (*cmd)
+	while (*cmd && result)
 	{
 		if (flag && (*cmd == '"' || *cmd == '\''))
 			tmp = handle_quotes(&cmd, envp);
@@ -97,10 +124,11 @@ char	*handle_token(char *cmd, char **envp, bool	flag, bool *env_flag)
 		else
 			tmp = ft_strndup(cmd++, 1);
 		if (!tmp)
-			return (free(result), NULL);
-		result = ft_strjoin_free(result, tmp);
-		if (!result)
+		{
+			free(result);
 			return (NULL);
+		}
+		result = ft_strjoin_free(result, tmp);
 	}
 	return (result);
 }

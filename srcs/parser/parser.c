@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:28:57 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/29 15:59:56 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/09/30 18:57:12 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ t_cmd_table	*parser(char **cmds)
 	t_cmd_table		*current;
 	int				i;
 	int				index;
-	int				flag;
 
 	i = 0;
 	index = 0;
@@ -93,9 +92,11 @@ t_cmd_table	*parser(char **cmds)
 	{
 		if (malloc_current_cmds(current, cmds, i) == -1)
 			return (free_table(t_cmds), NULL);
-		flag = process_cmd(&current, cmds, &i, &index);
-		if (flag == -1)
-			return (free_table(t_cmds), NULL);
+		if (process_cmd(&current, cmds, &i, &index) == -1)
+		{
+			free_table(t_cmds);
+			return (NULL);
+		}
 		i++;
 	}
 	current->cmd[index] = NULL;
