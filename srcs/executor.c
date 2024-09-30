@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/29 14:41:35 by yxu              ###   ########.fr       */
+/*   Updated: 2024/09/30 14:44:22 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ void	executor(t_cmd_table *cmd, char ***envpp)
 {
 	if (!cmd)
 	{
-		if (errno)
+		if (errno && errno != ENOTTY)
 		{
 			ft_dprintf(2, "minishell: %s\n", strerror(errno));
 			errno = 0;
