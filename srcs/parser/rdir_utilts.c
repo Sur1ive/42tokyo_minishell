@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/30 19:13:09 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/01 03:19:49 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,15 +65,24 @@ void	*ft_realloc(void *ptr, size_t new_size)
 	return (new_ptr);
 }
 
-int	read_and_process_line(int pipefd, char *delimiter, char **envp)
+int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
 {
 	char	*line;
 	char	*expanded_line;
+	bool	env_flag;
 
+	env_flag = false;
 	line = readline("> ");
 	if (!line)
 		return (-1);
-	expanded_line = handle_token(line, envp, 1, NULL);
+	if (!flag)
+	{
+		expanded_line = handle_token(line, envp, 1, &env_flag);
+		if (env_flag)
+			expanded_line = ft_strdup("");
+	}
+	else
+		expanded_line = ft_strdup(line);
 	free(line);
 	if (!expanded_line)
 		return (-1);
@@ -93,11 +102,58 @@ int	read_and_process_line(int pipefd, char *delimiter, char **envp)
 	return (1);
 }
 
-int	set_heredoc(char *delimiter, char **envp)
+int set_deli(char **delimiter)
+{
+	char	*end;
+	char	*tmp;
+	char	*result;
+	char	*del_tmp;
+	int		flag;
+
+	flag = 0;
+	del_tmp = *delimiter;
+	tmp = NULL;
+	result = ft_strdup("");
+	if (!result)
+		return(-1);
+	while (*del_tmp)
+	{
+		if (*del_tmp == '"' || *del_tmp == '\'')
+		{
+			end = ft_strchr(del_tmp + 1, *del_tmp);
+			if (!end)
+			{
+				ft_dprintf(2, "quote error\n");
+				free(result);
+				return (-1);
+			}
+			flag = 1;
+			tmp = ft_strndup(del_tmp + 1, end - del_tmp - 1);
+			del_tmp = end + 1;
+			if (!tmp)
+			{
+				free(result);
+				return (-1);
+			}
+		}
+		else
+			tmp = ft_strndup(del_tmp++, 1);
+		result = ft_strjoin_free(result, tmp);
+		if (!result)
+			return (-1);
+	}
+	free(*delimiter);
+	*delimiter = result;
+	return (flag);
+}
+
+int	set_heredoc(char **delimiter, char **envp)
 {
 	int		pipefd[2];
 	int		status;
+	int		flag;
 
+	flag = set_deli(delimiter);
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");
@@ -105,7 +161,7 @@ int	set_heredoc(char *delimiter, char **envp)
 	}
 	while (1)
 	{
-		status = read_and_process_line(pipefd[1], delimiter, envp);
+		status = read_and_process_line(pipefd[1], *delimiter, envp, flag);
 		if (status <= 0)
 			break ;
 	}

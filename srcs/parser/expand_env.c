@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 16:39:32 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/30 19:36:13 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/01 02:11:41 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 char	*handle_token(char *cmd, char **envp, bool	flag, bool *env_flag);
 
-static char	*ft_strjoin_free(char const *s1, char const *s2)
+char	*ft_strjoin_free(char const *s1, char const *s2)
 {
 	char	*str;
 	char	*start;

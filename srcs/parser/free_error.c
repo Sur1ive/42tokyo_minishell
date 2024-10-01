@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:27:46 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/29 16:00:57 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/01 03:41:23 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	syntax_error(char **cmd)
 		return (print_syntax_error(cmd[0]));
 	while (cmd[i])
 	{
-		if (is_redirection(cmd[i]))
+		if (is_redirection(cmd[i]) || !ft_strcmp(cmd[i], "|"))
 		{
 			if (!cmd[i + 1])
 				return (print_syntax_error("newline"));

@@ -6,14 +6,14 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 20:26:35 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/30 19:28:34 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/01 02:50:29 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parse.h"
 
-int	set_heredoc(char *delimiter, char **envp);
+int	set_heredoc(char **delimiter, char **envp);
 
 int	handle_heredocs(t_cmd_table *current, char **envp, int *here_fd)
 {
@@ -26,7 +26,7 @@ int	handle_heredocs(t_cmd_table *current, char **envp, int *here_fd)
 		{
 			if (*here_fd != STDOUT_FILENO)
 				close(*here_fd);
-			*here_fd = set_heredoc(tmp->fd_name, envp);
+			*here_fd = set_heredoc(&(tmp->fd_name), envp);
 			if (*here_fd == -1)
 			{
 				ft_dprintf(2, " %s\n", strerror(errno));
