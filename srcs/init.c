@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 21:38:38 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/29 18:29:57 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/01 12:04:22 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void	deal_signal(int signum)
 {
 	if (signum == SIGINT)
 	{
-		g_exit_code = MANUAL_TERM;
+		set_exit_code(MANUAL_TERM, 0);
 		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);

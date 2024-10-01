@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rdir_pipe.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 20:26:35 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/30 19:28:34 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/01 12:02:47 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	handle_heredocs(t_cmd_table *current, char **envp, int *here_fd)
 			{
 				ft_dprintf(2, " %s\n", strerror(errno));
 				errno = 0;
-				g_exit_code = 1;
+				set_exit_code(GENERAL_ERR, 0);
 				return (-1);
 			}
 		}
@@ -52,7 +52,7 @@ int	output_redirection(t_cmd_table *current, t_redirection *tmp)
 	{
 		ft_dprintf(2, " %s\n", strerror(errno));
 		errno = 0;
-		g_exit_code = 1;
+		set_exit_code(GENERAL_ERR, 0);
 		return (-1);
 	}
 	return (0);
@@ -70,7 +70,7 @@ int	input_redirection(t_cmd_table *current, t_redirection *tmp, int here_fd)
 	{
 		ft_dprintf(2, "minishell: %s: %s\n", tmp->fd_name, strerror(errno));
 		errno = 0;
-		g_exit_code = 1;
+		set_exit_code(GENERAL_ERR, 0);
 		return (-1);
 	}
 	return (0);

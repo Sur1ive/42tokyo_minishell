@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_env.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 16:39:32 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/30 19:36:13 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/01 12:05:31 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static char	*process_variable(char **line, char **envp, bool *env_flag)
 	if (**line == '?')
 	{
 		(*line)++;
-		return (ft_itoa(g_exit_code));
+		return (ft_itoa(set_exit_code(0, EC_RDONLY)));
 	}
 	var_name = extract_var_name(line);
 	if (var_name)
