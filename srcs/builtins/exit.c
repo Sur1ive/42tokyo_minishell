@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 13:42:46 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/01 12:00:20 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 14:25:14 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,21 @@ static int	str_is_valid(char *s)
 		i++;
 	}
 	return (1);
+}
+
+int	set_exit_code(int new_exit_code, int mode)
+{
+	static int	exit_code = 0;
+
+	if (mode != EC_RDONLY)
+		exit_code = new_exit_code;
+	return (exit_code);
+}
+
+void	shell_exit(int status)
+{
+	mod_sigquit_key(S_RESTORE);
+	exit(status);
 }
 
 int	builtin_exit(char **args)

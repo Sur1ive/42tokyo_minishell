@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/01 12:04:07 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 21:46:24 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,32 +30,6 @@
 // 	printf("------------------------------------------\n");
 // }
 
-static int	replace_io(int in, int out)
-{
-	int	result1;
-	int	result2;
-
-	result1 = 0;
-	result2 = 0;
-	if (in != 0)
-	{
-		result1 = dup2(in, STDIN_FILENO);
-		close(in);
-	}
-	if (out != 1)
-	{
-		result2 = dup2(out, STDOUT_FILENO);
-		close(out);
-	}
-	if (result1 == -1 || result2 == -1)
-	{
-		ft_dprintf(2, "minishell: %s\n", strerror(errno));
-		errno = 0;
-		return (-1);
-	}
-	return (0);
-}
-
 static void	executor_nofork(t_cmd_table *cmd, char ***envpp)
 {
 	int	result;
@@ -73,7 +47,7 @@ static void	executor_nofork(t_cmd_table *cmd, char ***envpp)
 	{
 		freecmd(cmd);
 		free2(*envpp);
-		exit(GENERAL_ERR);
+		shell_exit(GENERAL_ERR);
 	}
 	set_exit_code(result, 0);
 }
@@ -106,6 +80,25 @@ static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 	}
 }
 
+static void	handle_wstatus(int wstatus)
+{
+	if (WIFSIGNALED(wstatus))
+	{
+		if (WTERMSIG(wstatus) == SIGINT)
+		{
+			set_exit_code(MANUAL_TERM, 0);
+			printf("\n");
+		}
+		if (WTERMSIG(wstatus) == SIGQUIT)
+		{
+			set_exit_code(MANUAL_QUIT, 0);
+			printf("Quit\n");
+		}
+	}
+	else
+		set_exit_code(WEXITSTATUS(wstatus), 0);
+}
+
 static void	executor_fork(t_cmd_table *cmd, char ***envpp)
 {
 	t_cmd_table	*cmd_start;
@@ -122,13 +115,16 @@ static void	executor_fork(t_cmd_table *cmd, char ***envpp)
 			close(cmd->out);
 		cmd = cmd->next;
 	}
+	set_signal(S_DISABLE);
 	cmd = cmd_start;
+	wstatus = 0;
 	while (cmd && cmd->cmd[0])
 	{
 		waitpid(cmd->pid, &wstatus, 0);
-		set_exit_code(WEXITSTATUS(wstatus), 0);
 		cmd = cmd->next;
 	}
+	set_signal(S_ENABLE);
+	handle_wstatus(wstatus);
 }
 
 void	executor(t_cmd_table *cmd, char ***envpp)
@@ -143,8 +139,10 @@ void	executor(t_cmd_table *cmd, char ***envpp)
 		}
 		return ;
 	}
+	mod_sigquit_key(S_RESTORE);
 	if (cmd->next == NULL && cmd->cmd[0] && is_builtin(cmd->cmd[0]))
 		executor_nofork(cmd, envpp);
 	else
 		executor_fork(cmd, envpp);
+	mod_sigquit_key(S_DISABLE);
 }

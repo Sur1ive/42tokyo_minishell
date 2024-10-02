@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 18:36:14 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/01 11:46:53 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 17:54:09 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ int	exec(char **args, char ***envpp, t_cmd_table *cmd)
 	{
 		freecmd(cmd);
 		free2(*envpp);
-		exit(result * -1 % 256);
+		shell_exit(result * -1 % 256);
 	}
 	return (result);
 }
