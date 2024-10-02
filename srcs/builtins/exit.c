@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 13:42:46 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 13:05:28 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 13:48:36 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,7 @@ int	set_exit_code(int new_exit_code, int mode)
 
 void	shell_exit(int status)
 {
-	if (isatty(STDIN_FILENO))
-		mod_sigquit_key(SQ_RESTORE);
+	mod_sigquit_key(SQ_RESTORE);
 	exit(status);
 }
 

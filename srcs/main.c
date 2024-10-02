@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 13:07:09 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 13:48:02 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ int	main(void)
 	char		**envp;
 	t_cmd_table	*cmds;
 
-	if (isatty(STDIN_FILENO))
-		mod_sigquit_key(SQ_DISABLE);
+	mod_sigquit_key(SQ_DISABLE);
 	set_signal();
 	init_envp(&envp);
 	input = readline("$ ");

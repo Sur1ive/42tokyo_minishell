@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 13:03:14 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 13:40:01 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,8 +143,10 @@ void	executor(t_cmd_table *cmd, char ***envpp)
 		}
 		return ;
 	}
+	mod_sigquit_key(SQ_RESTORE);
 	if (cmd->next == NULL && cmd->cmd[0] && is_builtin(cmd->cmd[0]))
 		executor_nofork(cmd, envpp);
 	else
 		executor_fork(cmd, envpp);
+	mod_sigquit_key(SQ_DISABLE);
 }
