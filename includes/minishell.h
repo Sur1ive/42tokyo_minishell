@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/01 11:57:17 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 12:50:55 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,8 @@
 # endif
 
 // exit code管理
-# define EC_RDONLY 1
-
 int			set_exit_code(int new_exit_code, int mode);
+# define EC_RDONLY 1
 
 // exit_codeの値
 # define EXIT_SUCCESS 0
@@ -83,8 +82,12 @@ typedef struct s_cmd_table
 
 /*------------------init functions---------------------*/
 
-// ctrl-c, ctrl-d, ctrl-\の動作を設定する。
+// ctrl-c, ctrl-\の動作を設定する。
 void		set_signal(void);
+
+void		mod_sigquit_key(int mode);
+# define SQ_RESTORE 0
+# define SQ_DISABLE 1
 
 // 環境変数を初期化する。環境変数の配列envpはmallocで確保するため、
 // プログラム終了時にfreeする必要がある。
@@ -102,6 +105,8 @@ int			exec(char **args, char ***envpp, t_cmd_table *cmd);
 // cmd tableのリストにあるすべてのコマンドを実行する
 void		executor(t_cmd_table *cmd, char ***envpp);
 void		freecmd(t_cmd_table *cmd);
+
+void		shell_exit(int status);
 
 /*----------functions about environment variables--------*/
 
@@ -148,9 +153,7 @@ char		*ft_strjoin3(char *s1, char *s2, char *s3);
 int			ft_count(char **p);
 
 char		*ft_strndup(char *s, size_t n);
-
+char		**ft_strdup2(char **arr);
 char		*ft_strncat(char *dst, const char *src, size_t n);
-
-/*---------------------utilitie-------------------------*/
 
 #endif

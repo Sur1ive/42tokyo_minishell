@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/01 12:04:07 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 13:03:14 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static void	executor_nofork(t_cmd_table *cmd, char ***envpp)
 	{
 		freecmd(cmd);
 		free2(*envpp);
-		exit(GENERAL_ERR);
+		shell_exit(GENERAL_ERR);
 	}
 	set_exit_code(result, 0);
 }
@@ -93,16 +93,16 @@ static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 		if (cmd->next)
 			close(cmd->next->in);
 		if (cmd->in < 0 || cmd->out < 0 || replace_io(cmd->in, cmd->out) == -1)
-			exit(GENERAL_ERR);
+			shell_exit(GENERAL_ERR);
 		result = exec(cmd->cmd, envpp, cmd);
 		if (result != 0)
 		{
 			if (errno)
 				ft_dprintf(2, "minishell: %s: %s\n",
 					cmd->cmd[0], strerror(errno));
-			exit(result);
+			shell_exit(result);
 		}
-		exit(EXIT_SUCCESS);
+		shell_exit(EXIT_SUCCESS);
 	}
 }
 
