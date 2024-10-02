@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 12:50:55 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 21:43:43 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int			set_exit_code(int new_exit_code, int mode);
 # define CMD_NOT_FOUND 127
 # define INVALID_EXITCODE 128
 # define MANUAL_TERM 130
+# define MANUAL_QUIT 131
 # define EXITCODE_OUT_OF_RANGE 255
 
 typedef struct s_flags
@@ -83,11 +84,11 @@ typedef struct s_cmd_table
 /*------------------init functions---------------------*/
 
 // ctrl-c, ctrl-\の動作を設定する。
-void		set_signal(void);
-
+void		set_signal(int mode);
 void		mod_sigquit_key(int mode);
-# define SQ_RESTORE 0
-# define SQ_DISABLE 1
+# define S_ENABLE 0
+# define S_RESTORE 0
+# define S_DISABLE 1
 
 // 環境変数を初期化する。環境変数の配列envpはmallocで確保するため、
 // プログラム終了時にfreeする必要がある。
@@ -155,5 +156,6 @@ int			ft_count(char **p);
 char		*ft_strndup(char *s, size_t n);
 char		**ft_strdup2(char **arr);
 char		*ft_strncat(char *dst, const char *src, size_t n);
+int			replace_io(int in, int out);
 
 #endif

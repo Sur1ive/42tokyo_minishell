@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 23:59:20 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 10:50:22 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 21:45:06 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,30 @@ char	**ft_strdup2(char **arr)
 	}
 	arr_cp[i] = NULL;
 	return (arr_cp);
+}
+
+int	replace_io(int in, int out)
+{
+	int	result1;
+	int	result2;
+
+	result1 = 0;
+	result2 = 0;
+	if (in != 0)
+	{
+		result1 = dup2(in, STDIN_FILENO);
+		close(in);
+	}
+	if (out != 1)
+	{
+		result2 = dup2(out, STDOUT_FILENO);
+		close(out);
+	}
+	if (result1 == -1 || result2 == -1)
+	{
+		perror(NULL);
+		errno = 0;
+		return (-1);
+	}
+	return (0);
 }

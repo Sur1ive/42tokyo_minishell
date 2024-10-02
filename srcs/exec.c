@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 18:36:14 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 13:03:12 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 17:54:09 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,14 @@ static int	exec_extern(char **args, char **envp)
 	if (search_executable(args[0], filepath, ft_getenv(envp, "PATH")) == NULL)
 	{
 		ft_dprintf(2, "%s: command not found\n", args[0]);
-		shell_exit(CMD_NOT_FOUND);
+		exit(CMD_NOT_FOUND);
 	}
 	execve(filepath, args, envp);
 	if (errno == EACCES)
 	{
 		ft_dprintf(2, "bash: %s: Permission denied\n", filepath);
 		errno = 0;
-		shell_exit(CANNOT_EXEC);
+		exit(CANNOT_EXEC);
 	}
 	return (GENERAL_ERR);
 }
@@ -76,7 +76,7 @@ static int	exec_dir(char **args, char ***envpp)
 	if (ft_strcmp(args[0], ".") * ft_strcmp(args[0], "..") == 0)
 	{
 		ft_dprintf(2, "%s: command not found\n", args[0]);
-		shell_exit(CMD_NOT_FOUND);
+		exit(CMD_NOT_FOUND);
 	}
 	if (stat(args[0], &st))
 	{
@@ -87,7 +87,7 @@ static int	exec_dir(char **args, char ***envpp)
 	if (S_ISDIR(st.st_mode))
 	{
 		ft_dprintf(2, "minishell: %s: Is a directory\n", args[0]);
-		shell_exit(CANNOT_EXEC);
+		exit(CANNOT_EXEC);
 	}
 	return (execve(args[0], args, *envpp));
 }
