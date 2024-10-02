@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 13:42:46 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 22:46:46 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 23:05:20 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,10 @@ void	shell_exit(int status)
 
 int	builtin_exit(char **args, pid_t pid)
 {
-	if (args[1] == NULL)
-		return (-256);
-	else if (pid == 1)
+	if (pid == 1)
 		printf("exit\n");
+	if (args[1] == NULL)
+		return (-256 - set_exit_code(0, EC_RDONLY));
 	if (args[2])
 	{
 		ft_dprintf(2, "minishell: exit: too many arguments\n");
