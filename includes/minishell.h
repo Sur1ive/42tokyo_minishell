@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 21:43:43 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 22:46:12 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ t_cmd_table	*parseline(char *line, char **envp);
 
 // 一つのcommand lineを実行する。
 // PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。
-int			exec(char **args, char ***envpp, t_cmd_table *cmd);
+int			exec(char **args, char ***envpp, t_cmd_table *cmd, pid_t pid);
 
 // cmd tableのリストにあるすべてのコマンドを実行する
 void		executor(t_cmd_table *cmd, char ***envpp);
@@ -131,13 +131,13 @@ char		**ft_getenv_item(char **envp, char *name);
 /*-----------------builtin funcitons---------------------*/
 
 int			is_builtin(char *command);
-int			exec_builtin(char **args, char ***envpp);
+int			exec_builtin(char **args, char ***envpp, pid_t pid);
 int			echo(char **args);
 int			pwd(void);
 int			env(char **envp);
 int			cd(char **args, char ***envpp);
 int			export(char **args, char ***envpp);
-int			builtin_exit(char **args);
+int			builtin_exit(char **args, pid_t pid);
 
 // unsetする環境変数をfreeしなく、空の文字列に書き換える
 int			unset(char **args, char ***envpp);

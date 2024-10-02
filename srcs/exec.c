@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 18:36:14 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 17:54:09 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 22:45:29 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static char	*search_executable(char *command, char *filepath_dest, char *path)
 	int			i;
 	struct stat	st;
 
+	if (path == NULL)
+		path = ".";
 	dirs = ft_split(path, ':');
 	if (dirs == NULL)
 		return (NULL);
@@ -58,13 +60,13 @@ static int	exec_extern(char **args, char **envp)
 	return (GENERAL_ERR);
 }
 
-static int	exec_cmd(char **args, char ***envpp)
+static int	exec_cmd(char **args, char ***envpp, pid_t pid)
 {
 	char	*command;
 
 	command = args[0];
 	if (is_builtin(command))
-		return (exec_builtin(args, envpp));
+		return (exec_builtin(args, envpp, pid));
 	else
 		return (exec_extern(args, *envpp));
 }
@@ -92,7 +94,7 @@ static int	exec_dir(char **args, char ***envpp)
 	return (execve(args[0], args, *envpp));
 }
 
-int	exec(char **args, char ***envpp, t_cmd_table *cmd)
+int	exec(char **args, char ***envpp, t_cmd_table *cmd, pid_t pid)
 {
 	int	result;
 
@@ -105,7 +107,7 @@ int	exec(char **args, char ***envpp, t_cmd_table *cmd)
 			return (CANNOT_EXEC);
 	}
 	else
-		result = exec_cmd(args, envpp);
+		result = exec_cmd(args, envpp, pid);
 	if (result < 0)
 	{
 		freecmd(cmd);
