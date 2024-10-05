@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:27:46 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/01 03:41:23 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/01 16:56:44 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	free_table(t_cmd_table *table)
 static int	print_syntax_error(char *token)
 {
 	ft_dprintf(2, " syntax error near unexpected token `%s'\n", token);
-	g_exit_code = MISUSE_OF_BUILTINS;
+	set_exit_code(MISUSE_OF_BUILTINS, 0);
 	return (-1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/30 14:44:22 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/01 12:04:07 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,16 +68,14 @@ static void	executor_nofork(t_cmd_table *cmd, char ***envpp)
 	out_cp = dup(STDOUT_FILENO);
 	if (in_cp == -1 || out_cp == -1 || replace_io(cmd->in, cmd->out) == -1)
 		return ;
-	result = exec_bulitin(cmd->cmd, envpp);
+	result = exec(cmd->cmd, envpp, cmd);
 	if (replace_io(in_cp, out_cp) == -1)
-		result = GENERAL_ERR * -1;
-	if (result < 0)
 	{
 		freecmd(cmd);
 		free2(*envpp);
-		exit(result * -1 % 256);
+		exit(GENERAL_ERR);
 	}
-	g_exit_code = result;
+	set_exit_code(result, 0);
 }
 
 static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
@@ -88,16 +86,15 @@ static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 	{
 		ft_dprintf(2, "minishell: %s\n", strerror(errno));
 		errno = 0;
-		g_exit_code = 1;
+		set_exit_code(GENERAL_ERR, 0);
 	}
 	else if (cmd->pid == 0)
 	{
-
 		if (cmd->next)
 			close(cmd->next->in);
 		if (cmd->in < 0 || cmd->out < 0 || replace_io(cmd->in, cmd->out) == -1)
 			exit(GENERAL_ERR);
-		result = exec(cmd->cmd, envpp);
+		result = exec(cmd->cmd, envpp, cmd);
 		if (result != 0)
 		{
 			if (errno)
@@ -129,7 +126,7 @@ static void	executor_fork(t_cmd_table *cmd, char ***envpp)
 	while (cmd && cmd->cmd[0])
 	{
 		waitpid(cmd->pid, &wstatus, 0);
-		g_exit_code = WEXITSTATUS(wstatus);
+		set_exit_code(WEXITSTATUS(wstatus), 0);
 		cmd = cmd->next;
 	}
 }
@@ -142,7 +139,7 @@ void	executor(t_cmd_table *cmd, char ***envpp)
 		{
 			ft_dprintf(2, "minishell: %s\n", strerror(errno));
 			errno = 0;
-			g_exit_code = 1;
+			set_exit_code(GENERAL_ERR, 0);
 		}
 		return ;
 	}

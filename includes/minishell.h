@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/27 23:41:49 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/01 11:57:17 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,12 @@
 #  define PATH_MAX 4096
 # endif
 
-// exit codeのグローバル変数
-extern int	g_exit_code;
+// exit code管理
+# define EC_RDONLY 1
 
-// g_exit_codeの値
+int			set_exit_code(int new_exit_code, int mode);
+
+// exit_codeの値
 # define EXIT_SUCCESS 0
 # define GENERAL_ERR 1
 # define MISUSE_OF_BUILTINS 2
@@ -66,7 +68,7 @@ typedef struct s_redirection
 	char					*op;
 	char					*fd_name;
 	struct s_redirection	*next;
-} t_redirection;
+}	t_redirection;
 
 typedef struct s_cmd_table
 {
@@ -95,7 +97,7 @@ t_cmd_table	*parseline(char *line, char **envp);
 
 // 一つのcommand lineを実行する。
 // PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。
-int			exec(char **args, char ***envpp);
+int			exec(char **args, char ***envpp, t_cmd_table *cmd);
 
 // cmd tableのリストにあるすべてのコマンドを実行する
 void		executor(t_cmd_table *cmd, char ***envpp);
@@ -123,7 +125,7 @@ char		**ft_getenv_item(char **envp, char *name);
 /*-----------------builtin funcitons---------------------*/
 
 int			is_builtin(char *command);
-int			exec_bulitin(char **args, char ***envpp);
+int			exec_builtin(char **args, char ***envpp);
 int			echo(char **args);
 int			pwd(void);
 int			env(char **envp);

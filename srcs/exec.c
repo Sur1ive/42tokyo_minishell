@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 18:36:14 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/27 18:16:54 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/01 11:46:53 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static int	exec_cmd(char **args, char ***envpp)
 
 	command = args[0];
 	if (is_builtin(command))
-		return (exec_bulitin(args, envpp));
+		return (exec_builtin(args, envpp));
 	else
 		return (exec_extern(args, *envpp));
 }
@@ -92,7 +92,7 @@ static int	exec_dir(char **args, char ***envpp)
 	return (execve(args[0], args, *envpp));
 }
 
-int	exec(char **args, char ***envpp)
+int	exec(char **args, char ***envpp, t_cmd_table *cmd)
 {
 	int	result;
 
@@ -106,5 +106,11 @@ int	exec(char **args, char ***envpp)
 	}
 	else
 		result = exec_cmd(args, envpp);
+	if (result < 0)
+	{
+		freecmd(cmd);
+		free2(*envpp);
+		exit(result * -1 % 256);
+	}
 	return (result);
 }

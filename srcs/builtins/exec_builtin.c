@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 13:53:13 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/17 21:08:26 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/01 11:39:16 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	is_builtin(char *command)
 	return (0);
 }
 
-int	exec_bulitin(char **args, char ***envpp)
+int	exec_builtin(char **args, char ***envpp)
 {
 	char	*command;
 

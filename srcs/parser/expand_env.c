@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 16:39:32 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/01 02:11:41 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/01 16:57:44 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static char	*process_variable(char **line, char **envp, bool *env_flag)
 	if (**line == '?')
 	{
 		(*line)++;
-		return (ft_itoa(g_exit_code));
+		return (ft_itoa(set_exit_code(0, EC_RDONLY)));
 	}
 	var_name = extract_var_name(line);
 	if (var_name)
