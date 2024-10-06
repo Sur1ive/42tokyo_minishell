@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/01 03:19:49 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/06 12:05:36 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,23 +46,31 @@ int	handle_pipe(t_cmd_table **current)
 	return (0);
 }
 
-void	*ft_realloc(void *ptr, size_t new_size)
+char	*get_a_line(int flag, bool *env_flag, char **envp, char *line)
 {
-	void	*new_ptr;
+	char	*expanded_line;
+	char	*tmp;
 
-	if (new_size == 0)
+	if (!flag)
 	{
-		free(ptr);
-		return (NULL);
+		expanded_line = ft_strdup("");
+		while (*line && expanded_line)
+		{
+			if (*line == '$')
+				tmp = process_variable(&line, envp, env_flag);
+			else
+				tmp = ft_strndup(line++, 1);
+			if (!tmp && !env_flag)
+			{
+				free(expanded_line);
+				return (NULL);
+			}
+			expanded_line = ft_strjoin_free(expanded_line, tmp);
+		}
 	}
-	if (ptr == NULL)
-		return (malloc(new_size));
-	new_ptr = malloc(new_size);
-	if (new_ptr == NULL)
-		return (NULL);
-	ft_memcpy(new_ptr, ptr, new_size);
-	free(ptr);
-	return (new_ptr);
+	else
+		expanded_line = ft_strdup(line);
+	return (expanded_line);
 }
 
 int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
@@ -73,16 +81,7 @@ int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
 
 	env_flag = false;
 	line = readline("> ");
-	if (!line)
-		return (-1);
-	if (!flag)
-	{
-		expanded_line = handle_token(line, envp, 1, &env_flag);
-		if (env_flag)
-			expanded_line = ft_strdup("");
-	}
-	else
-		expanded_line = ft_strdup(line);
+	expanded_line = get_a_line(flag, &env_flag, envp, line);
 	free(line);
 	if (!expanded_line)
 		return (-1);
@@ -102,49 +101,33 @@ int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
 	return (1);
 }
 
-int set_deli(char **delimiter)
+char	*set_deli(char *delimiter, int *flag)
 {
 	char	*end;
-	char	*tmp;
 	char	*result;
-	char	*del_tmp;
-	int		flag;
+	char	*tmp;
 
-	flag = 0;
-	del_tmp = *delimiter;
-	tmp = NULL;
+	*flag = 0;
 	result = ft_strdup("");
-	if (!result)
-		return(-1);
-	while (*del_tmp)
+	while (*delimiter && result)
 	{
-		if (*del_tmp == '"' || *del_tmp == '\'')
+		if (*delimiter == '"' || *delimiter == '\'')
 		{
-			end = ft_strchr(del_tmp + 1, *del_tmp);
-			if (!end)
-			{
-				ft_dprintf(2, "quote error\n");
-				free(result);
-				return (-1);
-			}
-			flag = 1;
-			tmp = ft_strndup(del_tmp + 1, end - del_tmp - 1);
-			del_tmp = end + 1;
-			if (!tmp)
-			{
-				free(result);
-				return (-1);
-			}
+			end = ft_strchr(delimiter + 1, *delimiter);
+			*flag = 1;
+			tmp = ft_strndup(delimiter + 1, end - delimiter - 1);
+			delimiter = end + 1;
 		}
 		else
-			tmp = ft_strndup(del_tmp++, 1);
+			tmp = ft_strndup(delimiter++, 1);
+		if (!tmp)
+		{
+			free(result);
+			return (NULL);
+		}
 		result = ft_strjoin_free(result, tmp);
-		if (!result)
-			return (-1);
 	}
-	free(*delimiter);
-	*delimiter = result;
-	return (flag);
+	return (result);
 }
 
 int	set_heredoc(char **delimiter, char **envp)
@@ -152,8 +135,13 @@ int	set_heredoc(char **delimiter, char **envp)
 	int		pipefd[2];
 	int		status;
 	int		flag;
+	char	*tmp;
 
-	flag = set_deli(delimiter);
+	tmp = *delimiter;
+	*delimiter = set_deli(*delimiter, &flag);
+	free(tmp);
+	if (!delimiter)
+		return (-1);
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");

@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 16:39:32 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/01 16:57:44 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/06 13:05:05 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,12 @@ static char	*extract_var_name(char **line)
 	var_start = *line;
 	while (**line && (ft_isalnum(**line) || **line == '_'))
 		(*line)++;
+	if (var_start == *line)
+		return (NULL);
 	return (ft_strndup(var_start, *line - var_start));
 }
 
-static char	*process_variable(char **line, char **envp, bool *env_flag)
+char	*process_variable(char **line, char **envp, bool *env_flag)
 {
 	char	*var_name;
 	char	*var_value;
@@ -73,15 +75,17 @@ static char	*process_variable(char **line, char **envp, bool *env_flag)
 		var_value = ft_getenv(envp, var_name);
 		free(var_name);
 		if (var_value)
+		{
+			*env_flag = false;
 			return (ft_strdup(var_value));
+		}
 		else
 			*env_flag = true;
-		return (NULL);
 	}
-	return (ft_strdup(""));
+	return (NULL);
 }
 
-static char	*handle_quotes(char **cmd, char **envp)
+static char	*handle_quotes(char **cmd, char **envp, bool *env_flag)
 {
 	char	quote;
 	char	*end;
@@ -100,7 +104,7 @@ static char	*handle_quotes(char **cmd, char **envp)
 	else
 	{
 		sub_str = ft_strndup(*cmd + 1, end - *cmd - 1);
-		tmp = handle_token(sub_str, envp, 0, NULL);
+		tmp = handle_token(sub_str, envp, 0, env_flag);
 		free(sub_str);
 	}
 	*cmd = end + 1;
@@ -118,17 +122,19 @@ char	*handle_token(char *cmd, char **envp, bool	flag, bool *env_flag)
 	while (*cmd && result)
 	{
 		if (flag && (*cmd == '"' || *cmd == '\''))
-			tmp = handle_quotes(&cmd, envp);
+			tmp = handle_quotes(&cmd, envp, env_flag);
 		else if (*cmd == '$')
 			tmp = process_variable(&cmd, envp, env_flag);
 		else
 			tmp = ft_strndup(cmd++, 1);
-		if (!tmp)
+		if (!tmp && !*env_flag)
 		{
 			free(result);
 			return (NULL);
 		}
 		result = ft_strjoin_free(result, tmp);
 	}
+	if (!ft_strcmp(result, "\0") && *env_flag)
+		return (free(result), NULL);
 	return (result);
 }

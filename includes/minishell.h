@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/01 11:57:17 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/02 22:46:12 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,8 @@
 # endif
 
 // exit code管理
-# define EC_RDONLY 1
-
 int			set_exit_code(int new_exit_code, int mode);
+# define EC_RDONLY 1
 
 // exit_codeの値
 # define EXIT_SUCCESS 0
@@ -53,6 +52,7 @@ int			set_exit_code(int new_exit_code, int mode);
 # define CMD_NOT_FOUND 127
 # define INVALID_EXITCODE 128
 # define MANUAL_TERM 130
+# define MANUAL_QUIT 131
 # define EXITCODE_OUT_OF_RANGE 255
 
 typedef struct s_flags
@@ -83,8 +83,12 @@ typedef struct s_cmd_table
 
 /*------------------init functions---------------------*/
 
-// ctrl-c, ctrl-d, ctrl-\の動作を設定する。
-void		set_signal(void);
+// ctrl-c, ctrl-\の動作を設定する。
+void		set_signal(int mode);
+void		mod_sigquit_key(int mode);
+# define S_ENABLE 0
+# define S_RESTORE 0
+# define S_DISABLE 1
 
 // 環境変数を初期化する。環境変数の配列envpはmallocで確保するため、
 // プログラム終了時にfreeする必要がある。
@@ -97,11 +101,13 @@ t_cmd_table	*parseline(char *line, char **envp);
 
 // 一つのcommand lineを実行する。
 // PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。
-int			exec(char **args, char ***envpp, t_cmd_table *cmd);
+int			exec(char **args, char ***envpp, t_cmd_table *cmd, pid_t pid);
 
 // cmd tableのリストにあるすべてのコマンドを実行する
 void		executor(t_cmd_table *cmd, char ***envpp);
 void		freecmd(t_cmd_table *cmd);
+
+void		shell_exit(int status);
 
 /*----------functions about environment variables--------*/
 
@@ -125,13 +131,13 @@ char		**ft_getenv_item(char **envp, char *name);
 /*-----------------builtin funcitons---------------------*/
 
 int			is_builtin(char *command);
-int			exec_builtin(char **args, char ***envpp);
+int			exec_builtin(char **args, char ***envpp, pid_t pid);
 int			echo(char **args);
 int			pwd(void);
 int			env(char **envp);
 int			cd(char **args, char ***envpp);
 int			export(char **args, char ***envpp);
-int			builtin_exit(char **args);
+int			builtin_exit(char **args, pid_t pid);
 
 // unsetする環境変数をfreeしなく、空の文字列に書き換える
 int			unset(char **args, char ***envpp);
@@ -148,9 +154,8 @@ char		*ft_strjoin3(char *s1, char *s2, char *s3);
 int			ft_count(char **p);
 
 char		*ft_strndup(char *s, size_t n);
-
+char		**ft_strdup2(char **arr);
 char		*ft_strncat(char *dst, const char *src, size_t n);
-
-/*---------------------utilitie-------------------------*/
+int			replace_io(int in, int out);
 
 #endif

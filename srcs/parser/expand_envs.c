@@ -3,15 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   expand_envs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 16:07:45 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/01 12:01:45 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/06 13:05:26 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parse.h"
+
+char	*quote_check(char *src)
+{
+	char	*tmp;
+
+	tmp = src;
+	while (*tmp)
+	{
+		if (*tmp == '"' || *tmp == '\'')
+		{
+			tmp = ft_strchr(tmp + 1, *tmp);
+			if (!tmp)
+			{
+				ft_dprintf(2, "quote error\n");
+				return (NULL);
+			}
+		}
+		tmp++;
+	}
+	src = ft_strdup(src);
+	return (src);
+}
 
 int	redir_env(t_redirection *r_current, char **envp,
 	t_cmd_table *table, bool *env_flag)
@@ -24,7 +46,7 @@ int	redir_env(t_redirection *r_current, char **envp,
 		if (ft_strcmp(r_current->op, "<<") != 0)
 			r_current->fd_name = handle_token(tmp, envp, 1, env_flag);
 		else
-			r_current->fd_name = ft_strdup(r_current->fd_name);
+			r_current->fd_name = quote_check(tmp);
 		if (!r_current->fd_name)
 		{
 			if (*env_flag)
@@ -61,7 +83,7 @@ int	cmd_env(char **cmd, char **envp, t_cmd_table *table, bool *env_flag)
 			return (-1);
 		}
 		free(tmp);
-		if (*env_flag)
+		if (*env_flag && !cmd[index])
 			*env_flag = false;
 		else
 			index++;
