@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:27:46 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/07 20:39:29 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/07 20:58:50 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ void	free_table(t_cmd_table *table)
 
 int	print_syntax_error(char *token)
 {
-	ft_dprintf(2, "minishell: syntax error near unexpected token `%s'\n", token);
+	ft_dprintf(2, "minishell: syntax error near unexpected token `%s'\n",
+		token);
 	set_exit_code(MISUSE_OF_BUILTINS, 0);
 	return (-1);
 }
