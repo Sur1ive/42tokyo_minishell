@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 20:33:38 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/07 20:36:12 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/07 20:42:58 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@ int	create_pipe(int *pipefd, int mode)
 		count = 0;
 		return (0);
 	}
+	if (count > PIPEMAX)
+	{
+		print_syntax_error("|");
+		return (-1);
+	}
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");
@@ -29,11 +34,6 @@ int	create_pipe(int *pipefd, int mode)
 		return (-1);
 	}
 	count++;
-	if (count >= 30000)
-	{
-		print_syntax_error("|");
-		return (-1);
-	}
 	return (1);
 }
 

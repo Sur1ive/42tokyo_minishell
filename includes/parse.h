@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:42:36 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/07 20:36:24 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/07 20:42:16 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 int			create_pipe(int *pipefd, int mode);
 # define CREATE 0
 # define PIPECOUNTRESET 1
+# define PIPEMAX 3332
 
 
 int			syntax_error(char **cmd);
