@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rdir_utilts.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/07 11:04:16 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/07 16:43:32 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	handle_pipe(t_cmd_table **current)
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");
+		errno = 0;
 		return (-1);
 	}
 	if ((*current)->out == STDOUT_FILENO)

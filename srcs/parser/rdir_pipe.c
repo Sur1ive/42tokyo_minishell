@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rdir_pipe.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 20:26:35 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/07 11:05:07 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/07 16:25:58 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ t_cmd_table	*exec_preparator(t_cmd_table *cmds, char **envp)
 				freecmd(cmds);
 				return (NULL);
 			}
-		}	
+		}
 	}
 	return (head);
 }

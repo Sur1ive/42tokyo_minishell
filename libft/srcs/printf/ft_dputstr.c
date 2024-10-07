@@ -1,32 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   ft_fputstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/13 13:03:12 by yxu               #+#    #+#             */
-/*   Updated: 2023/11/05 18:11:40 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/07 16:06:19 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_putchar(char c)
+int	ft_dputchar(char *dest, char c)
 {
-	write(1, &c, 1);
+	ft_memcpy(dest, &c, 1);
 	return (1);
 }
 
-int	ft_putstr(char *str)
+int	ft_dputstr(char *dest, char *str)
 {
-	int	n;
-
-	n = 0;
 	if (!str)
-		n += ft_putstr("(null)");
+		return (ft_dputstr(dest, "(null)"));
 	else
-		while (str[n] != '\0')
-			write(1, &str[n++], 1);
-	return (n);
+		ft_memcpy(dest, str, ft_strlen(str));
+	return (ft_strlen(str));
 }

@@ -3,74 +3,121 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 18:48:40 by yxu               #+#    #+#             */
-/*   Updated: 2023/11/05 18:11:31 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/07 16:25:07 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	ft_print1f(va_list ap, char c)
+static int	ft_dprint1f(char *dest, va_list ap, char c)
 {
 	int	n;
 
 	n = 0;
 	if (c == 'c')
-		n += ft_putchar(va_arg(ap, int));
+		n += ft_dputchar(dest, va_arg(ap, int));
 	else if (c == 's')
-		n += ft_putstr(va_arg(ap, char *));
+		n += ft_dputstr(dest, va_arg(ap, char *));
 	else if (c == 'p')
-		n += ft_putp(va_arg(ap, void *));
+		n += ft_dputp(dest, va_arg(ap, void *));
 	else if (c == 'd' || c == 'i')
-		n += ft_putnbr_base(va_arg(ap, int), "0123456789");
+		n += ft_dputnbr_base(dest, va_arg(ap, int), "0123456789");
 	else if (c == 'u')
-		n += ft_putunbr_base(va_arg(ap, unsigned int), "0123456789");
+		n += ft_dputulnbr_base(dest, va_arg(ap, unsigned), "0123456789");
 	else if (c == 'x')
-		n += ft_putunbr_base(va_arg(ap, unsigned int), "0123456789abcdef");
+		n += ft_dputulnbr_base(dest, va_arg(ap, unsigned), "0123456789abcdef");
 	else if (c == 'X')
-		n += ft_putunbr_base(va_arg(ap, unsigned int), "0123456789ABCDEF");
+		n += ft_dputulnbr_base(dest, va_arg(ap, unsigned), "0123456789ABCDEF");
 	else if (c == '%')
-		n += ft_putchar('%');
+		n += ft_dputchar(dest, '%');
 	return (n);
+}
+
+int	ft_printflen(const char *str, va_list ap)
+{
+	int		len;
+	size_t	i;
+
+	i = 0;
+	len = 0;
+	while (str[i] && str[i + 1])
+	{
+		if (str[i] == '%')
+		{
+			len += ft_dprint1f(NULL, ap, str[i + 1]);
+			i += 2;
+		}
+		else
+			len += ft_dputchar(NULL, str[i++]);
+	}
+	if (str[i])
+		len += ft_dputchar(NULL, str[i]);
+	return (len);
+}
+
+int	ft_destprintf(char *dest, const char *str, va_list ap)
+{
+	char	*dest_start;
+	size_t	i;
+
+	i = 0;
+	dest_start = dest;
+	while (str[i] && str[i + 1])
+	{
+		if (str[i] == '%')
+		{
+			dest += ft_dprint1f(dest, ap, str[i + 1]);
+			i += 2;
+		}
+		else
+			dest += ft_dputchar(dest, str[i++]);
+	}
+	if (str[i])
+		dest += ft_dputchar(dest, str[i]);
+	return (dest - dest_start);
+}
+
+int	ft_dprintf(int fd, const char *str, ...)
+{
+	va_list	ap;
+	int		len;
+	char	*dest;
+
+	va_start(ap, str);
+	len = ft_printflen(str, ap);
+	va_end(ap);
+	dest = (char *)malloc(sizeof(char) * (len + 1));
+	if (dest == NULL)
+		return (-1);
+	dest[len] = '\0';
+	va_start(ap, str);
+	ft_destprintf(dest, str, ap);
+	va_end(ap);
+	write(fd, dest, len);
+	free(dest);
+	return (len);
 }
 
 int	ft_printf(const char *str, ...)
 {
 	va_list	ap;
-	size_t	i;
-	int		n;
+	int		len;
+	char	*dest;
 
-	i = 0;
-	n = 0;
 	va_start(ap, str);
-	while (str[i] && str[i + 1])
-	{
-		if (str[i] == '%')
-		{
-			n += ft_print1f(ap, str[i + 1]);
-			i += 2;
-		}
-		else
-			n += ft_putchar(str[i++]);
-	}
-	if (str[i])
-		n += ft_putchar(str[i]);
+	len = ft_printflen(str, ap);
 	va_end(ap);
-	return (n);
+	dest = (char *)malloc(sizeof(char) * (len + 1));
+	if (dest == NULL)
+		return (-1);
+	dest[len] = '\0';
+	va_start(ap, str);
+	ft_destprintf(dest, str, ap);
+	va_end(ap);
+	write(1, dest, len);
+	free(dest);
+	return (len);
 }
-
-// #include <stdio.h>
-// #include <limits.h>
-// int	main()
-// {
-// 	// char	*p = "Badsfjhasd12345";
-
-// 	printf("return: %d\n",
-// 		printf("   printf: c: %c s: %s i: %i d: %d p: %p u: %u X: %X %% ",
-// 			126, NULL, INT_MAX, INT_MIN, (void *)ULONG_MAX, -1, -1));
-// 	printf("return: %d\n",
-// 		ft_printf("ft_printf: c: %c s: %s i: %i d: %d p: %p u: %u X: %X %% ",
-// 			126, NULL, INT_MAX, INT_MIN, (void *)ULONG_MAX, -1, -1));
-// }
