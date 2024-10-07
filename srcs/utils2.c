@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 23:59:20 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/07 16:34:44 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/07 20:54:32 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parse.h"
 
 void	freecmd(t_cmd_table *cmd)
 {
@@ -27,6 +27,7 @@ void	freecmd(t_cmd_table *cmd)
 		free(cmd);
 		cmd = next;
 	}
+	create_pipe(NULL, PIPECOUNTRESET);
 }
 
 char	**ft_strdup2(char **arr)
