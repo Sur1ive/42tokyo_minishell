@@ -3,13 +3,13 @@ SRC_DIR = srcs/
 SRCS	= $(shell find $(SRC_DIR) -type f -name "*.c")
 OBJS	= $(SRCS:.c=.o)
 LIB		= ./libft/libft.a
-CC		= cc -Wall -Wextra -Werror -Iincludes -lreadline
+CC		= cc -Wall -Wextra -Werror -Iincludes
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	make -C libft
-	$(CC) $(OBJS) $(LIB) -o $(NAME)
+	$(CC) $(OBJS) $(LIB) -o $(NAME) -lreadline
 
 clean:
 	rm -rf $(OBJS)
