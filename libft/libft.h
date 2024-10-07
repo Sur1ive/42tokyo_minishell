@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 13:14:39 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 13:52:16 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/07 16:09:21 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <limits.h>
 # include <stdarg.h>
+# include <stdint.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1000
@@ -78,20 +79,12 @@ t_list	*ft_lstlast(t_list *lst);
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 int		ft_printf(const char *str, ...);
-int		ft_putchar(char c);
-int		ft_putstr(char *str);
-int		ft_putp(void *p);
-int		ft_putnbr_base(int num, char *base);
-int		ft_putunbr_base(unsigned int nb, char *base);
-int		ft_putulnbr_base(unsigned long num, char *base);
-
 int		ft_dprintf(int fd, const char *str, ...);
-int		ft_fputchar(int fd, char c);
-int		ft_fputstr(int fd, char *str);
-int		ft_fputp(int fd, void *p);
-int		ft_fputnbr_base(int fd, int num, char *base);
-int		ft_fputunbr_base(int fd, unsigned int nb, char *base);
-int		ft_fputulnbr_base(int fd, unsigned long num, char *base);
+int		ft_dputchar(char *dest, char c);
+int		ft_dputstr(char *dest, char *str);
+int		ft_dputp(char *dest, void *p);
+int		ft_dputnbr_base(char *dest, int num, char *base);
+int		ft_dputulnbr_base(char *dest, unsigned long num, char *base);
 
 char	*get_next_line(int fd);
 

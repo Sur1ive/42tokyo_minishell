@@ -6,17 +6,23 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/16 15:44:11 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/23 13:39:04 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/07 16:07:01 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static void	ft_fwrite_num(int fd, long int num, char *base, int n)
+static int	ft_dwrite_num(char *dest, unsigned long num, char *base, int n)
 {
-	if (num >= n)
-		ft_fwrite_num(fd, num / n, base, n);
-	write(fd, &base[num % n], 1);
+	int	offset;
+
+	if (num >= (unsigned long)n)
+		offset = ft_dwrite_num(dest, num / n, base, n);
+	else
+		offset = 0;
+	dest += offset;
+	ft_memcpy(dest, &base[num % n], 1);
+	return (offset + 1);
 }
 
 static size_t	ft_numlen(unsigned long num, size_t n)
@@ -26,41 +32,29 @@ static size_t	ft_numlen(unsigned long num, size_t n)
 	return (1);
 }
 
-int	ft_fputnbr_base(int fd, int nbr, char *base)
+int	ft_dputnbr_base(char *dest, int nbr, char *base)
 {
-	int		n;
+	int		sign;
 	long	num;
 
 	num = nbr;
-	n = 0;
+	if (dest == NULL && num < 0)
+		return (1 + ft_numlen(-num, ft_strlen(base)));
+	else if (dest == NULL && num >= 0)
+		return (ft_numlen(num, ft_strlen(base)));
+	sign = 0;
 	if (num < 0)
 	{
-		write(fd, "-", 1);
-		n++;
+		ft_memcpy(dest++, "-", 1);
+		sign = 1;
 		num = -num;
 	}
-	ft_fwrite_num(fd, num, base, ft_strlen(base));
-	return (n + ft_numlen(num, ft_strlen(base)));
+	return (sign + ft_dwrite_num(dest, num, base, ft_strlen(base)));
 }
 
-int	ft_fputunbr_base(int fd, unsigned int num, char *base)
+int	ft_dputulnbr_base(char *dest, unsigned long num, char *base)
 {
-	size_t	n;
-
-	n = ft_strlen(base);
-	if (num >= n)
-		ft_fputunbr_base(fd, num / n, base);
-	write(fd, &base[num % n], 1);
-	return (ft_numlen(num, n));
-}
-
-int	ft_fputulnbr_base(int fd, unsigned long num, char *base)
-{
-	size_t	n;
-
-	n = ft_strlen(base);
-	if (num >= n)
-		ft_fputulnbr_base(fd, num / n, base);
-	write(fd, &base[num % n], 1);
-	return (ft_numlen(num, n));
+	if (dest == NULL)
+		return (ft_numlen(num, ft_strlen(base)));
+	return (ft_dwrite_num(dest, num, base, ft_strlen(base)));
 }

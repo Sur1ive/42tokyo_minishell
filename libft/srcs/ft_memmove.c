@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 13:16:05 by yxu               #+#    #+#             */
-/*   Updated: 2023/10/01 21:40:13 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/07 14:03:51 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	*ft_memmove(void *dst, const void *src, size_t len)
 {
 	unsigned char	*buf;
 
-	if (src == NULL && dst == NULL)
+	if (src == NULL || dst == NULL)
 		return (NULL);
 	buf = (unsigned char *)dst;
 	if (dst > src && (unsigned long)(dst - src) < len)
