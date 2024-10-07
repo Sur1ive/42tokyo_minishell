@@ -6,28 +6,12 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/06 12:05:36 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/07 11:04:16 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parse.h"
-
-t_cmd_table	*create_cmd_table_entry(void)
-{
-	t_cmd_table	*entry;
-
-	entry = (t_cmd_table *)malloc(sizeof(t_cmd_table));
-	if (!entry)
-		return (NULL);
-	entry->cmd = NULL;
-	entry->redir = NULL;
-	entry->in = STDIN_FILENO;
-	entry->out = STDOUT_FILENO;
-	entry->next = NULL;
-	entry->prev = NULL;
-	return (entry);
-}
 
 int	handle_pipe(t_cmd_table **current)
 {

@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 20:26:35 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/06 08:38:02 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/07 11:05:07 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,13 @@ t_cmd_table	*exec_preparator(t_cmd_table *cmds, char **envp)
 		if (!current->next)
 			break ;
 		if (current->next)
-			handle_pipe(&current);
+		{
+			if (handle_pipe(&current) == -1)
+			{
+				freecmd(cmds);
+				return (NULL);
+			}
+		}	
 	}
 	return (head);
 }
