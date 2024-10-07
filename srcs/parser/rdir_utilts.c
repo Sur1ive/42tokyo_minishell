@@ -3,33 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   rdir_utilts.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/07 16:43:32 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/07 20:36:10 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parse.h"
-
-int	handle_pipe(t_cmd_table **current)
-{
-	int	pipefd[2];
-
-	if (pipe(pipefd) == -1)
-	{
-		perror("pipe");
-		errno = 0;
-		return (-1);
-	}
-	if ((*current)->out == STDOUT_FILENO)
-		(*current)->out = pipefd[1];
-	(*current)->next->prev = *current;
-	*current = (*current)->next;
-	(*current)->in = pipefd[0];
-	return (0);
-}
 
 char	*get_a_line(int flag, bool *env_flag, char **envp, char *line)
 {
@@ -127,11 +109,8 @@ int	set_heredoc(char **delimiter, char **envp)
 	free(tmp);
 	if (!delimiter)
 		return (-1);
-	if (pipe(pipefd) == -1)
-	{
-		perror("pipe");
+	if (create_pipe(pipefd, CREATE) == -1)
 		return (-1);
-	}
 	while (1)
 	{
 		status = read_and_process_line(pipefd[1], *delimiter, envp, flag);

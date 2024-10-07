@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:42:36 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/06 11:29:05 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/07 20:36:24 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 # define PARSE_H
 
 # include "minishell.h"
+
+int			create_pipe(int *pipefd, int mode);
+# define CREATE 0
+# define PIPECOUNTRESET 1
+
 
 int			syntax_error(char **cmd);
 void		*ft_realloc(void *ptr, size_t new_size);
@@ -24,6 +29,8 @@ char		*process_variable(char **line, char **envp, bool *env_flag);
 char		*handle_token(char *cmd, char **envp, bool	flag, bool *env_flag);
 int			handle_pipe(t_cmd_table **current);
 char		*ft_strjoin_free(char const *s1, char const *s2);
+int			print_syntax_error(char *token);
+int			create_pipe(int *pipefd, int mode);
 
 int			is_redirection(char *token);
 t_cmd_table	*create_cmd_table_entry(void);

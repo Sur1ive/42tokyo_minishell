@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 16:39:32 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/06 13:05:05 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/07 19:41:35 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,6 @@ char	*handle_token(char *cmd, char **envp, bool	flag, bool *env_flag)
 	char	*result;
 	char	*tmp;
 
-	if (!cmd)
-		return (NULL);
 	result = ft_strdup("");
 	while (*cmd && result)
 	{
@@ -135,6 +133,9 @@ char	*handle_token(char *cmd, char **envp, bool	flag, bool *env_flag)
 		result = ft_strjoin_free(result, tmp);
 	}
 	if (!ft_strcmp(result, "\0") && *env_flag)
-		return (free(result), NULL);
+	{
+		free(result);
+		return (NULL);
+	}
 	return (result);
 }
