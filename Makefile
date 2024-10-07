@@ -9,7 +9,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	make -C libft
-	$(CC) $(OBJS) $(LIB) -o $(NAME) -lreadline -fsanitize=address
+	$(CC) $(OBJS) $(LIB) -o $(NAME)
 
 clean:
 	rm -rf $(OBJS)
