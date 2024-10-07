@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 23:59:20 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 21:45:06 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/07 16:34:44 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@ void	freecmd(t_cmd_table *cmd)
 	while (cmd)
 	{
 		next = cmd->next;
+		if (cmd->in != STDIN_FILENO)
+			close(cmd->in);
+		if (cmd->out != STDOUT_FILENO)
+			close(cmd->out);
 		free2(cmd->cmd);
 		free(cmd);
 		cmd = next;
