@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/12 18:10:51 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/12 18:29:23 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,23 +40,23 @@ char	*get_a_line(int flag, bool *env_flag, char **envp, char *line)
 	return (expanded_line);
 }
 
-static int write_to_pipe(int pipefd, char **data)
+static int	write_to_pipe(int pipefd, char **data)
 {
-    if (write(pipefd, *data, ft_strlen(*data)) == -1)
-    {
-        perror("write");
+	if (write(pipefd, *data, ft_strlen(*data)) == -1)
+	{
+		perror("write");
 		free(*data);
 		data = NULL;
-        return (-1);
-    }
-    if (write(pipefd, "\n", 1) == -1)
-    {
-        perror("write");
+		return (-1);
+	}
+	if (write(pipefd, "\n", 1) == -1)
+	{
+		perror("write");
 		free(*data);
 		data = NULL;
-        return (-1);
-    }
-    return (0);
+		return (-1);
+	}
+	return (0);
 }
 
 int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
@@ -70,7 +70,7 @@ int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
 	if (!line)
 	{
 		dprintf(2, "minishell: warning: here-document at line %d delimited \
-			by end-of-file (wanted `%s')", count_line(CL_READ), delimiter);
+by end-of-file (wanted `%s')\n", count_line(CL_READ), delimiter);
 		return (0);
 	}
 	if (ft_strcmp(line, delimiter) == 0)
@@ -83,7 +83,7 @@ int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
 	if (!expanded_line)
 		return (-1);
 	if (write_to_pipe(pipefd, &expanded_line) == -1)
-        return (-1);
+		return (-1);
 	free(expanded_line);
 	return (1);
 }
