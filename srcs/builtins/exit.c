@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 13:42:46 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 23:05:20 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/12 17:58:54 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,18 +53,19 @@ int	builtin_exit(char **args, pid_t pid)
 		printf("exit\n");
 	if (args[1] == NULL)
 		return (-256 - set_exit_code(0, EC_RDONLY));
-	if (args[2])
-	{
-		ft_dprintf(2, "minishell: exit: too many arguments\n");
-		set_exit_code(GENERAL_ERR, 0);
-	}
-	else if (str_is_valid(args[1]))
+	if (str_is_valid(args[1]))
 		set_exit_code(ft_atoi(args[1]) % 256, 0);
 	else
 	{
 		ft_dprintf(2, "minishell: exit: %s: numeric argument required\n",
 			args[1]);
 		set_exit_code(MISUSE_OF_BUILTINS, 0);
+		return (set_exit_code(0, EC_RDONLY) * -1);
+	}
+	if (args[2])
+	{
+		ft_dprintf(2, "minishell: exit: too many arguments\n");
+		set_exit_code(GENERAL_ERR, 0);
 	}
 	return (set_exit_code(0, EC_RDONLY) * -1);
 }
