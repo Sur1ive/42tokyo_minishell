@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/07 20:36:10 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/12 18:10:51 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*get_a_line(int flag, bool *env_flag, char **envp, char *line)
 	char	*expanded_line;
 	char	*tmp;
 
-	if (!flag)
+	if (!flag && line)
 	{
 		expanded_line = ft_strdup("");
 		while (*line && expanded_line)
@@ -35,9 +35,28 @@ char	*get_a_line(int flag, bool *env_flag, char **envp, char *line)
 			expanded_line = ft_strjoin_free(expanded_line, tmp);
 		}
 	}
-	else
+	else if (line)
 		expanded_line = ft_strdup(line);
 	return (expanded_line);
+}
+
+static int write_to_pipe(int pipefd, char **data)
+{
+    if (write(pipefd, *data, ft_strlen(*data)) == -1)
+    {
+        perror("write");
+		free(*data);
+		data = NULL;
+        return (-1);
+    }
+    if (write(pipefd, "\n", 1) == -1)
+    {
+        perror("write");
+		free(*data);
+		data = NULL;
+        return (-1);
+    }
+    return (0);
 }
 
 int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
@@ -48,22 +67,23 @@ int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
 
 	env_flag = false;
 	line = readline("> ");
+	if (!line)
+	{
+		dprintf(2, "minishell: warning: here-document at line %d delimited \
+			by end-of-file (wanted `%s')", count_line(CL_READ), delimiter);
+		return (0);
+	}
+	if (ft_strcmp(line, delimiter) == 0)
+	{
+		free(line);
+		return (0);
+	}
 	expanded_line = get_a_line(flag, &env_flag, envp, line);
 	free(line);
 	if (!expanded_line)
 		return (-1);
-	if (ft_strcmp(expanded_line, delimiter) == 0)
-	{
-		free(expanded_line);
-		return (0);
-	}
-	if (write(pipefd, expanded_line, ft_strlen(expanded_line)) == -1
-		|| write(pipefd, "\n", 1) == -1)
-	{
-		perror("write");
-		free(expanded_line);
-		return (-1);
-	}
+	if (write_to_pipe(pipefd, &expanded_line) == -1)
+        return (-1);
 	free(expanded_line);
 	return (1);
 }
