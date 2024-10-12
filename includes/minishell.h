@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 22:46:12 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/12 17:33:23 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,10 @@ int			init_envp(char ***envpp);
 
 // Inputを解析する(未完成)
 t_cmd_table	*parseline(char *line, char **envp);
+
+int			count_line(int mode);
+# define CL_READ 0
+# define CL_PLUS 1
 
 // 一つのcommand lineを実行する。
 // PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。
