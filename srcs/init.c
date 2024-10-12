@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 21:38:38 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/02 21:27:54 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/12 17:39:43 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ static void	deal_signal(int signum)
 		rl_replace_line("", 0);
 		rl_redisplay();
 		rl_already_prompted = 1;
+		count_line(CL_PLUS);
 	}
 }
 
