@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rdir_utilts.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/12 18:29:23 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/13 21:40:32 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,20 +66,19 @@ int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
 	bool	env_flag;
 
 	env_flag = false;
+	set_signal(S_HEREDOC);
+	set_exit_code(EXIT_SUCCESS, 0);
 	line = readline("> ");
+	set_signal(S_ENABLE);
+	if (set_exit_code(0, EC_RDONLY) == MANUAL_TERM)
+		return (0);
 	if (!line)
-	{
-		dprintf(2, "minishell: warning: here-document at line %d delimited \
-by end-of-file (wanted `%s')\n", count_line(CL_READ), delimiter);
-		return (0);
-	}
-	if (ft_strcmp(line, delimiter) == 0)
-	{
-		free(line);
-		return (0);
-	}
-	expanded_line = get_a_line(flag, &env_flag, envp, line);
+		return (dprintf(2, "minishell: warning: here-document at line %d delimited \
+by end-of-file (wanted `%s')\n", count_line(CL_READ), delimiter) * 0);
 	free(line);
+	if (ft_strcmp(rl_line_buffer, delimiter) == 0)
+		return (0);
+	expanded_line = get_a_line(flag, &env_flag, envp, rl_line_buffer);
 	if (!expanded_line)
 		return (-1);
 	if (write_to_pipe(pipefd, &expanded_line) == -1)

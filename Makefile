@@ -3,7 +3,7 @@ SRC_DIR = srcs/
 SRCS	= 	executor.c\
 			utils2.c\
 			exec.c\
-			init.c\
+			signal.c\
 			parser/rdir_utilts.c\
 			parser/pipe_utilts.c\
 			parser/parse.utils.c\

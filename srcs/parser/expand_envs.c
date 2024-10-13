@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_envs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 16:07:45 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/06 13:05:26 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/13 20:37:49 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	redir_env(t_redirection *r_current, char **envp,
 			if (*env_flag)
 			{
 				ft_dprintf(2, "minishell: %s: ambiguous redirect\n", tmp);
-				set_exit_code(MISUSE_OF_BUILTINS, 0);
+				set_exit_code(GENERAL_ERR, 0);
 			}
 			free(tmp);
 			free_table(table);

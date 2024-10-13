@@ -3,24 +3,48 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/12 17:52:48 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/13 21:37:14 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	count_line(int mode)
+void	mod_sigquit_key(int mode)
 {
-	static int	line_count = 0;
+	static cc_t		origin_mode = 255;
+	struct termios	new_termios;
 
-	if (mode == CL_READ)
-		return (line_count);
-	if (mode == CL_PLUS)
-		return (line_count++);
-	return (-1);
+	if (!isatty(STDIN_FILENO))
+		return ;
+	if (tcgetattr(STDIN_FILENO, &new_termios) < 0)
+	{
+		perror(NULL);
+		return ;
+	}
+	if (origin_mode == 255)
+		origin_mode = new_termios.c_cc[VQUIT];
+	if (mode == S_DISABLE)
+		new_termios.c_cc[VQUIT] = 0;
+	else
+		new_termios.c_cc[VQUIT] = origin_mode;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &new_termios) < 0)
+		perror(NULL);
+}
+
+// 環境変数を初期化する。環境変数の配列envpはmallocで確保するため、
+// プログラム終了時にfreeする必要がある。
+static int	init_envp(char ***envpp)
+{
+	*envpp = ft_strdup2(__environ);
+	if (*envpp == NULL)
+	{
+		ft_dprintf(2, "minishell: %s\n", strerror(errno));
+		shell_exit(GENERAL_ERR);
+	}
+	return (0);
 }
 
 int	main(void)

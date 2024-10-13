@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 23:59:20 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/07 20:54:32 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/13 21:35:04 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,15 @@ int	replace_io(int in, int out)
 		return (-1);
 	}
 	return (0);
+}
+
+int	count_line(int mode)
+{
+	static int	line_count = 0;
+
+	if (mode == CL_READ)
+		return (line_count);
+	if (mode == CL_PLUS)
+		return (line_count++);
+	return (-1);
 }

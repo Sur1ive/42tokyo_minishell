@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/12 17:33:23 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/13 21:39:54 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,27 +81,28 @@ typedef struct s_cmd_table
 	int					pid;
 }	t_cmd_table;
 
-/*------------------init functions---------------------*/
+/*------------------signal functions---------------------*/
 
-// ctrl-c, ctrl-\の動作を設定する。
-void		set_signal(int mode);
-void		mod_sigquit_key(int mode);
 # define S_ENABLE 0
 # define S_RESTORE 0
 # define S_DISABLE 1
+# define S_HEREDOC 2
 
-// 環境変数を初期化する。環境変数の配列envpはmallocで確保するため、
-// プログラム終了時にfreeする必要がある。
-int			init_envp(char ***envpp);
+// SIGINT(ctrl-c)とSIGQUIT(ctrl-\)のシグナルハンドラを設定する
+void		set_signal(int mode);
+
+// ctrl-\のterminalの動作を設定する。
+void		mod_sigquit_key(int mode);
 
 /*--------------processor functions --------------------*/
 
 // Inputを解析する(未完成)
 t_cmd_table	*parseline(char *line, char **envp);
 
-int			count_line(int mode);
 # define CL_READ 0
 # define CL_PLUS 1
+
+int			count_line(int mode);
 
 // 一つのcommand lineを実行する。
 // PATHを使った外部ファイル検索や、builtin関数を呼び出すことができる。

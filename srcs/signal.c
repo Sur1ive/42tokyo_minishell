@@ -1,49 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 21:38:38 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/12 17:39:43 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/13 21:47:31 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	mod_sigquit_key(int mode)
-{
-	static cc_t		origin_mode = 255;
-	struct termios	new_termios;
-
-	if (!isatty(STDIN_FILENO))
-		return ;
-	if (tcgetattr(STDIN_FILENO, &new_termios) < 0)
-	{
-		perror(NULL);
-		return ;
-	}
-	if (origin_mode == 255)
-		origin_mode = new_termios.c_cc[VQUIT];
-	if (mode == S_DISABLE)
-		new_termios.c_cc[VQUIT] = 0;
-	else
-		new_termios.c_cc[VQUIT] = origin_mode;
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &new_termios) < 0)
-		perror(NULL);
-}
-
-int	init_envp(char ***envpp)
-{
-	*envpp = ft_strdup2(__environ);
-	if (*envpp == NULL)
-	{
-		ft_dprintf(2, "minishell: %s\n", strerror(errno));
-		shell_exit(GENERAL_ERR);
-	}
-	return (0);
-}
 
 static void	deal_signal(int signum)
 {
@@ -59,14 +26,35 @@ static void	deal_signal(int signum)
 	}
 }
 
+static void	deal_signal_while_heredoc(int signum)
+{
+	if (signum == SIGINT)
+	{
+		set_exit_code(MANUAL_TERM, 0);
+		rl_done = 1;
+	}
+}
+
+/*
+	rl_done is only checked in the event loop.
+	When you give it a null event hook function, it checks the rl_done and exits.
+*/
+static int	event(void)
+{
+	return (0);
+}
+
 void	set_signal(int mode)
 {
 	struct sigaction	sa;
 
+	rl_event_hook = event;
 	if (sigemptyset(&sa.sa_mask) == -1)
 		perror(NULL);
 	if (mode == S_DISABLE)
 		sa.sa_handler = SIG_IGN;
+	else if (mode == S_HEREDOC)
+		sa.sa_handler = deal_signal_while_heredoc;
 	else
 		sa.sa_handler = deal_signal;
 	sa.sa_flags = 0;
