@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/13 19:35:49 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/13 22:47:02 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 	}
 }
 
-static void	handle_wstatus(int wstatus)
+static void	handle_wstatus(int wstatus, int is_terminated)
 {
 	if (WIFSIGNALED(wstatus))
 	{
@@ -91,39 +91,42 @@ static void	handle_wstatus(int wstatus)
 		if (WTERMSIG(wstatus) == SIGQUIT)
 		{
 			set_exit_code(MANUAL_QUIT, 0);
-			printf("Quit\n");
+			printf("Quit (core dumped)\n");
 		}
+		return ;
 	}
-	else
-		set_exit_code(WEXITSTATUS(wstatus), 0);
+	else if (is_terminated)
+		printf("\n");
+	set_exit_code(WEXITSTATUS(wstatus), 0);
 }
 
 static void	executor_fork(t_cmd_table *cmd, char ***envpp)
 {
 	t_cmd_table	*cmd_start;
 	int			wstatus;
+	int			is_terminated;
 
 	cmd_start = cmd;
 	while (cmd && cmd->cmd[0])
 	{
 		cmd->pid = fork();
 		executor_child_process(cmd, envpp);
-		if (cmd->in != 0)
-			close(cmd->in);
-		if (cmd->out != 1)
-			close(cmd->out);
+		close_opened_io(cmd->in, cmd->out);
 		cmd = cmd->next;
 	}
 	set_signal(S_DISABLE);
 	cmd = cmd_start;
 	wstatus = 0;
+	is_terminated = 0;
 	while (cmd && cmd->cmd[0])
 	{
 		waitpid(cmd->pid, &wstatus, 0);
+		if (WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT)
+			is_terminated = 1;
 		cmd = cmd->next;
 	}
 	set_signal(S_ENABLE);
-	handle_wstatus(wstatus);
+	handle_wstatus(wstatus, is_terminated);
 }
 
 void	executor(t_cmd_table *cmd, char ***envpp)

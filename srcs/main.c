@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:51:09 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/13 21:37:14 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/13 22:00:10 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	main(void)
 	mod_sigquit_key(S_DISABLE);
 	set_signal(S_ENABLE);
 	init_envp(&envp);
-	input = readline("$ ");
+	input = readline("minishell$ ");
 	while (input != NULL)
 	{
 		count_line(CL_PLUS);
@@ -67,8 +67,9 @@ int	main(void)
 		cmds = parseline(rl_line_buffer, envp);
 		executor(cmds, &envp);
 		freecmd(cmds);
-		input = readline("$ ");
+		input = readline("minishell$ ");
 	}
 	free2(envp);
+	printf("exit\n");
 	shell_exit(set_exit_code(0, EC_RDONLY));
 }

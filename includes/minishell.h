@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 14:49:58 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/13 21:39:54 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/13 22:46:18 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,5 +162,6 @@ char		*ft_strndup(char *s, size_t n);
 char		**ft_strdup2(char **arr);
 char		*ft_strncat(char *dst, const char *src, size_t n);
 int			replace_io(int in, int out);
+void		close_opened_io(int in, int out);
 
 #endif

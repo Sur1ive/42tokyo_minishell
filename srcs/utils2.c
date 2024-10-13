@@ -6,11 +6,19 @@
 /*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 23:59:20 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/13 21:35:04 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/13 22:47:30 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.h"
+
+void	close_opened_io(int in, int out)
+{
+	if (in != STDIN_FILENO)
+		close(in);
+	if (out != STDOUT_FILENO)
+		close(out);
+}
 
 void	freecmd(t_cmd_table *cmd)
 {
@@ -19,10 +27,7 @@ void	freecmd(t_cmd_table *cmd)
 	while (cmd)
 	{
 		next = cmd->next;
-		if (cmd->in != STDIN_FILENO)
-			close(cmd->in);
-		if (cmd->out != STDOUT_FILENO)
-			close(cmd->out);
+		close_opened_io(cmd->in, cmd->out);
 		free2(cmd->cmd);
 		free(cmd);
 		cmd = next;
