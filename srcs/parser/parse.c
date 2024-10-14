@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:37 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/07 11:04:21 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/14 11:58:07 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,10 @@ t_cmd_table	*parseline(char *line, char **envp)
 	if (!cmd_table)
 		return (NULL);
 	cmd_table = exec_preparator(cmd_table, envp);
+	if (set_exit_code(0, EC_RDONLY) == MANUAL_TERM)
+	{
+		freecmd(cmd_table);
+		return (NULL);
+	}
 	return (cmd_table);
 }
