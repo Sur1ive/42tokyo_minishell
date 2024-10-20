@@ -34,7 +34,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	make -C libft
-	$(CC) $(OBJS) $(LIB) -o $(NAME) -lreadline
+	$(CC) $(OBJS) $(LIB) -o $(NAME) -lreadline -fsanitize=address
 
 clean:
 	rm -rf $(OBJS)
