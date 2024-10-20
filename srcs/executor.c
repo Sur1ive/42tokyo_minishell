@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:47:59 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/13 22:47:02 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/20 14:48:39 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ static void	executor_child_process(t_cmd_table *cmd, char ***envpp)
 	}
 	else if (cmd->pid == 0)
 	{
-		if (cmd->next)
-			freecmd(cmd->next);
+		freecmd(cmd->next);
+		cmd->next = NULL;
 		if (cmd->in < 0 || cmd->out < 0 || replace_io(cmd->in, cmd->out) == -1)
 			exit(GENERAL_ERR);
 		result = exec(cmd->cmd, envpp, cmd, 0);
