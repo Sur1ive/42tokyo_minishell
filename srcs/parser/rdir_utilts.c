@@ -18,6 +18,7 @@ char	*get_a_line(int flag, bool *env_flag, char **envp, char *line)
 	char	*expanded_line;
 	char	*tmp;
 
+	expanded_line = NULL;
 	if (!flag && line)
 	{
 		expanded_line = ft_strdup("");
