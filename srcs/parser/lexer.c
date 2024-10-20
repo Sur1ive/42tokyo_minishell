@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 03:54:38 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/28 05:13:03 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/20 12:13:55 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,9 +102,9 @@ char	**lexer(char *line, char **command)
 	int		i;
 	t_flags	flag;
 
-	while (*line == ' ' || *line == '\t')
+	while (('\t' <= *line && *line <= '\r') || *line == ' ')
 		line++;
-	if (*line == '\0' || *line == '\n')
+	if (*line == '\0')
 		return (NULL);
 	wc = count_words(line);
 	command = malloc((wc + 1) * sizeof(char *));

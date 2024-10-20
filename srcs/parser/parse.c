@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 15:43:37 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/14 11:58:07 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/20 12:11:29 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,10 @@ t_cmd_table	*parseline(char *line, char **envp)
 	char			**command;
 	t_cmd_table		*cmd_table;
 
-	command = NULL;
-	command = lexer(line, command);
-	if (!command)
+	command = lexer(line, NULL);
+	if (command)
+		set_exit_code(EXIT_SUCCESS, 0);
+	else
 		return (NULL);
 	if (syntax_error(command) == -1)
 	{
