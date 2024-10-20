@@ -6,7 +6,7 @@
 /*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:07:41 by yxu               #+#    #+#             */
-/*   Updated: 2024/09/26 16:01:36 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/20 15:02:33 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,7 @@ static int	handle_env_error(char *arg)
 {
 	if (is_valid_env(arg) && ft_strchr(arg, '=') == NULL)
 		return (0);
-	if (ft_strlen(arg) == 0)
-		ft_dprintf(2, "minishell: export: `': not a valid identifier\n");
-	else
-		ft_dprintf(2, "minishell: export: %s: not a valid identifier\n", arg);
+	ft_dprintf(2, "minishell: export: `%s': not a valid identifier\n", arg);
 	return (1);
 }
 
