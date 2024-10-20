@@ -6,7 +6,7 @@ SRCS	= 	executor.c\
 			signal.c\
 			parser/rdir_utilts.c\
 			parser/pipe_utilts.c\
-			parser/parse.utils.c\
+			parser/parse_utils.c\
 			parser/lexer.c\
 			parser/expand_envs.c\
 			parser/expand_env.c\

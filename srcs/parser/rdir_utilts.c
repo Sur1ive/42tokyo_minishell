@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rdir_utilts.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42tokyo.jp>               +#+  +:+       +#+        */
+/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/13 21:40:32 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/20 13:10:54 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
 	line = readline("> ");
 	set_signal(S_ENABLE);
 	if (set_exit_code(0, EC_RDONLY) == MANUAL_TERM)
-		return (0);
+		return (MANUAL_TERM * -1);
 	if (!line)
 		return (dprintf(2, "minishell: warning: here-document at line %d delimited \
 by end-of-file (wanted `%s')\n", count_line(CL_READ), delimiter) * 0);
@@ -127,13 +127,17 @@ int	set_heredoc(char **delimiter, char **envp)
 	tmp = *delimiter;
 	*delimiter = set_deli(*delimiter, &flag);
 	free(tmp);
-	if (!delimiter)
-		return (-1);
-	if (create_pipe(pipefd, CREATE) == -1)
+	if (!delimiter || create_pipe(pipefd, CREATE) == -1)
 		return (-1);
 	while (1)
 	{
 		status = read_and_process_line(pipefd[1], *delimiter, envp, flag);
+		if (status == MANUAL_TERM * -1)
+		{
+			close(pipefd[0]);
+			close(pipefd[1]);
+			return (MANUAL_TERM * -1);
+		}
 		if (status <= 0)
 			break ;
 	}
