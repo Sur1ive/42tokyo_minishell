@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rdir_utilts.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
+/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 21:15:56 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/20 13:10:54 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/20 15:28:05 by yxu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	read_and_process_line(int pipefd, char *delimiter, char **envp, int flag)
 	if (set_exit_code(0, EC_RDONLY) == MANUAL_TERM)
 		return (MANUAL_TERM * -1);
 	if (!line)
-		return (dprintf(2, "minishell: warning: here-document at line %d delimited \
+		return (ft_dprintf(2, "minishell: warning: here-document at line %d delimited \
 by end-of-file (wanted `%s')\n", count_line(CL_READ), delimiter) * 0);
 	free(line);
 	if (ft_strcmp(rl_line_buffer, delimiter) == 0)
