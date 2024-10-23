@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 20:33:38 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/07 20:51:33 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/23 16:19:03 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,11 @@ int	handle_pipe(t_cmd_table **current)
 	if (create_pipe(pipefd, CREATE) == -1)
 		return (-1);
 	if ((*current)->out == STDOUT_FILENO)
+	{
 		(*current)->out = pipefd[1];
+	}
+	else
+		close(pipefd[1]);
 	(*current)->next->prev = *current;
 	*current = (*current)->next;
 	(*current)->in = pipefd[0];
