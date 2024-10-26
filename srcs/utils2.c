@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 23:59:20 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/26 14:30:01 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/26 15:06:18 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	freecmd(t_cmd_table *cmd)
 	while (cmd)
 	{
 		next = cmd->next;
-		free_redirections(cmd->redir);
+		free_redirections(&(cmd->redir));
 		close_opened_io(cmd->in, cmd->out);
 		free2(cmd->cmd);
 		free(cmd);

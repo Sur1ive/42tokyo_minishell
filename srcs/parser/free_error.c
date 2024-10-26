@@ -6,17 +6,21 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:27:46 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/26 14:39:58 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/26 15:06:55 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parse.h"
 
-void	free_redirections(t_redirection *redir)
+void	free_redirections(t_redirection **redirp)
 {
 	t_redirection	*tmp;
+	t_redirection	*redir;
 
+	if (redirp == NULL)
+		return ;
+	redir = *redirp;
 	while (redir)
 	{
 		tmp = redir;
@@ -27,6 +31,7 @@ void	free_redirections(t_redirection *redir)
 			free(tmp->fd_name);
 		free(tmp);
 	}
+	*redirp = NULL;
 }
 
 int	print_syntax_error(char *token)
