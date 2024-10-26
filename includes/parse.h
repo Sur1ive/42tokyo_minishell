@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:42:36 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/07 20:58:14 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/26 16:47:16 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ t_cmd_table	*parser(char **cmds);
 t_cmd_table	*expand_envs(t_cmd_table	*table, char **envp);
 t_cmd_table	*exec_preparator(t_cmd_table *cmds, char **envp);
 
-void		free_redirections(t_redirection *redir);
-void		free_table(t_cmd_table *table);
+void		free_redirections(t_redirection **redirp);
 
 #endif
