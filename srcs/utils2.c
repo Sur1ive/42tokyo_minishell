@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yxu <yxu@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 23:59:20 by yxu               #+#    #+#             */
-/*   Updated: 2024/10/20 14:45:55 by yxu              ###   ########.fr       */
+/*   Updated: 2024/10/26 14:30:01 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	freecmd(t_cmd_table *cmd)
 	while (cmd)
 	{
 		next = cmd->next;
+		free_redirections(cmd->redir);
 		close_opened_io(cmd->in, cmd->out);
 		free2(cmd->cmd);
 		free(cmd);

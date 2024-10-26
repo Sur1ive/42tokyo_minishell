@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:28:57 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/09/30 18:57:12 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/26 14:33:29 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,10 @@ t_cmd_table	*parser(char **cmds)
 	while (cmds[i])
 	{
 		if (malloc_current_cmds(current, cmds, i) == -1)
-			return (free_table(t_cmds), NULL);
+			return (freecmd(t_cmds), NULL);
 		if (process_cmd(&current, cmds, &i, &index) == -1)
 		{
-			free_table(t_cmds);
+			freecmd(t_cmds);
 			return (NULL);
 		}
 		i++;

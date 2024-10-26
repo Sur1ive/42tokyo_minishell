@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 03:27:46 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/07 20:58:50 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/26 14:39:58 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,6 @@ void	free_redirections(t_redirection *redir)
 			free(tmp->op);
 		if (tmp->fd_name)
 			free(tmp->fd_name);
-		free(tmp);
-	}
-}
-
-void	free_table(t_cmd_table *table)
-{
-	t_cmd_table	*tmp;
-
-	while (table)
-	{
-		tmp = table;
-		table = table->next;
-		if (tmp->redir)
-			free_redirections(tmp->redir);
-		if (tmp->cmd)
-			free2(tmp->cmd);
 		free(tmp);
 	}
 }

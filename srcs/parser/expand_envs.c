@@ -6,7 +6,7 @@
 /*   By: nakagawashinta <nakagawashinta@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 16:07:45 by nakagawashi       #+#    #+#             */
-/*   Updated: 2024/10/20 13:20:28 by nakagawashi      ###   ########.fr       */
+/*   Updated: 2024/10/26 14:35:28 by nakagawashi      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	redir_env(t_redirection *r_current, char **envp,
 				set_exit_code(GENERAL_ERR, 0);
 			}
 			free(tmp);
-			free_table(table);
+			freecmd(table);
 			return (-1);
 		}
 		free(tmp);
@@ -79,7 +79,7 @@ int	cmd_env(char **cmd, char **envp, t_cmd_table *table, bool *env_flag)
 		if (!cmd[index] && !(*env_flag))
 		{
 			free(tmp);
-			free_table(table);
+			freecmd(table);
 			return (-1);
 		}
 		free(tmp);
