@@ -4,7 +4,7 @@
 
 A simple shell that mimics bash. 
 
-This project was completed in collaboration with [@ARATA](https://github.com/N-Art157). I was responsible for the executor, signal handling, builtin commands, and environment variables, while ARATA was responsible for the parser and heredoc.
+This project was completed in collaboration with [@ARATA](https://github.com/N-Art157). I was responsible for the executor, signal handling, builtin commands, and environment variables, while ARATA was responsible for the parser, redirection and heredoc. The multi-pipe functionality was implemented jointly.
 
 **Usage:**
 ```
